@@ -1,0 +1,38 @@
+{% extends "main.html" %}
+
+    {% block page_content %}
+    <div class="div1">
+        <div class="hello">
+            <h1>Hello,</h1>
+        </div>
+        <div class="name">
+            <h1>{{user.4}}</h1>
+        </div>
+        <div class="weather"><p>7 degrees<br>Toronto, CA</p></div>
+    </div>
+
+    <div class="div2">
+        <div class="list">
+            <table>
+            {% for task in tasks %}
+            <tr>
+                <td>{{task.2}}</td>
+                <td><a href="/deletetask/{{task.0}}">Delete</a></td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>
+                    <form method="post" class="new-task">
+                        {{form.task(class="task-input")}}
+                        <button type="submit" class="new-task-button">New Task</button>
+                    </form>
+                </td>
+            </tr>
+            </table>
+        </div>
+        <div class="new-task-container">
+            
+            
+        </div>
+    </div>
+    {% endblock %}

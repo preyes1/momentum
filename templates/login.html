@@ -1,0 +1,16 @@
+
+{% block page_content%}
+    <div>
+        <h1>Login</h1>
+        <form method=post>
+            {{form.username.label}}
+            {{form.username()}}
+            <br>
+            {{form.password.label}}
+            {{form.password()}}
+            <br>
+            <button type="submit">LOGIN</button>
+        </form>
+    </div>
+    <h5><a href="/register">Create an Account</a></h5>
+{% endblock%}
