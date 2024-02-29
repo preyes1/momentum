@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, url_for, request, redirect, flash
 from flask_login import UserMixin, login_user, login_required, LoginManager, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, validators, Form, PasswordField
+from wtforms import StringField, SubmitField, validators, Form, PasswordField, SelectField
 from wtforms.validators import InputRequired, Length, ValidationError
 from wtforms.fields.datetime import DateField
 from wtforms.fields import TimeField
@@ -11,6 +11,19 @@ from datetime import datetime
 import mysql.connector
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
+import datetime as dt
+import requests
+
+#weather api
+BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
+API_KEY = "15df869839c74281f7b1914adbc67201"
+
+def keltoC(degrees):
+    return degrees - 273.15
+#list of available cities
+city = ['Toronto', 'New York City', 'Los Angeles', 'Chicago', 'Ottawa', "Vancouver", "Tokyo"]
+
+
 
 
 app = Flask(__name__)
@@ -20,15 +33,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123@localhost/cale
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-#the login function will run if user tries to enter url without logging in
-login_manager.login_view = 'login'
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
 #default route can change later
 @app.route('/')
@@ -54,12 +58,26 @@ def home(username):
     cur.execute(f"SELECT * FROM tasks WHERE user_id = '{userid}'")
     tasks = cur.fetchall()
     cur.close()
+
+    #for the weather
+    CITY = user[6]
+    print("base: " + BASE_URL)
+    print("base212: " + API_KEY)
+    print("city: " + CITY)
+    url = BASE_URL + "appid=" + API_KEY + "&q=" + CITY
+    response = requests.get(url).json()
+    #number list
+    weather = [round(keltoC(response['main']['temp']), 1), round(keltoC(response['main']['feels_like']), 1)]
+    #string list
+    weatherS = [response['weather'][0]['description'], response['sys']['country'], response['name']]
+    
+    
     if request.method == "POST":
         task = Tasks(user_id = userid, task = form.task.data)
         db.session.add(task)
         db.session.commit()
         return redirect(url_for('home', username=username))
-    return render_template('home.html', user = user, tasks = tasks, form=form)
+    return render_template('home.html', user = user, tasks = tasks, form=form, weather=weather, weatherS=weatherS)
 
 @app.route("/deletetask/<int:task_id>")
 def deleteTask(task_id):
@@ -105,7 +123,7 @@ def register():
     form = UserAddForm(request.form)
     if request.method == "POST":
         user = User(username = form.username.data, password = form.password.data, email = form.email.data,
-                    fname = form.fname.data, lname = form.lname.data)
+                    fname = form.fname.data, lname = form.lname.data, city = form.city.data)
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('login'))
@@ -120,6 +138,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(64))
     fname = db.Column(db.String(64))
     lname = db.Column(db.String(64))
+    city = db.Column(db.String(64))
 
     tasks = db.relationship("Tasks", backref='user')
     
@@ -137,6 +156,7 @@ class UserAddForm(Form):
     email = StringField("Email", validators=[validators.InputRequired()])
     fname = StringField("First Name", validators=[validators.InputRequired()])
     lname = StringField("Last Name", validators=[validators.InputRequired()])
+    city = SelectField("City", choices=city)
 
 class UserLogin(Form):
     username = StringField("Username", validators=[validators.InputRequired()])
