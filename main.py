@@ -48,19 +48,20 @@ def load_user(id):
 def index():
     return redirect('login')
 
-#not implemented yet
+#can use current_user.id to get the current user
 @app.route('/calendar')
 def calendar():
+    user = User.query.filter_by(id=current_user.id).first()
     return render_template('calendar.html')
 
 #returns a personalized home screen
-@app.route('/home/<string:username>', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
 @login_required
-def home(username):
+def home():
     form = TaskAddForm(request.form)
     cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
     cur = cnx.cursor()
-    cur.execute(f"SELECT * FROM user WHERE username = '{username}'")
+    cur.execute(f"SELECT * FROM user WHERE username = '{current_user.username}'")
     user = cur.fetchone()
     userid = user[0]
     #gets all tasks that the user created
@@ -79,16 +80,16 @@ def home(username):
     
     
     if request.method == "POST":
-        task = Tasks(id = userid, task = form.task.data)
+        task = Tasks(user_id = userid, task = form.task.data)
         db.session.add(task)
         db.session.commit()
-        return redirect(url_for('home', username=username))
+        return redirect(url_for('home'))
     return render_template('home.html', user = user, tasks = tasks, form=form, weather=weather, weatherS=weatherS)
 
 @app.route("/deletetask/<int:task_id>")
 def deleteTask(task_id):
     task = Tasks.query.get_or_404(task_id)
-    user = User.query.get_or_404(task.id)
+    user = User.query.get_or_404(task.user_id)
     try:
         db.session.delete(task)
         db.session.commit()
@@ -111,12 +112,11 @@ def login():
         #user[0] is username, user[1] is password 
         cur.close()
         user = User.query.filter_by(username=username).first()
-        print(user.username)
         if user:
             if check_password_hash(user.password, pwd):
                 flash("Login Successful", category='success')
                 login_user(user, remember=True)
-                return redirect(url_for('home', username=username))
+                return redirect(url_for('home'))
             else:
                 flash("Wrong Password!")
         else:
