@@ -4,8 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.css'>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+    <!--Navbar internal style-->
+    <style>
+        html, body{
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            font-family: "Inter", sans-serif;
+            color: white;
+            background-color: #333333;
+        
+        }
+        .navbar ul{
+            list-style-type:none;
+            margin: 0;
+            padding: 0;
+            background-color: #252525;
+            overflow: hidden;
+        }
+
+        .navbar ul li{
+            display: inline;
+            float: left;
+        }
+
+        .navbar ul li a{
+            display: block;
+            padding: 8px;
+            text-align: center;
+            background-color: #252525;
+            text-decoration: none;
+            color: white;
+        }
+
+    </style>
 </head>
 <body>
-    
+    <!--Had to recreate the navbar for the calendar page because it can't exend the main.html
+    file or the calendar wouldn't show (could make a new html file just for navbar)-->
+    <div class="navbar">
+        <nav>
+            <ul>
+                <li><a href="">Home</a></li>
+                <li><a href="/">About</a></li>
+                <li><a href="/calendar">Calendar</a></li>
+                <li><a href="/login">Log Out</a></li>
+            </ul>
+        </nav>
+    </div>
+    <!--FullCalendar-->
+    <div id="calendar">
+    </div>
+    <script>
+        let calendarEl = document.getElementById('calendar');
+        let calendar = new FullCalendar.Calendar(calendarEl, {});
+        
+        calendar.render();
+    </script>
 </body>
 </html>

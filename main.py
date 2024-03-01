@@ -40,7 +40,7 @@ def index():
     return redirect('login')
 
 #not implemented yet
-@app.route('/<user>/calendar')
+@app.route('/calendar')
 def calendar():
     return render_template('calendar.html')
 
@@ -61,9 +61,6 @@ def home(username):
 
     #for the weather
     CITY = user[6]
-    print("base: " + BASE_URL)
-    print("base212: " + API_KEY)
-    print("city: " + CITY)
     url = BASE_URL + "appid=" + API_KEY + "&q=" + CITY
     response = requests.get(url).json()
     #number list
@@ -141,6 +138,7 @@ class User(db.Model, UserMixin):
     city = db.Column(db.String(64))
 
     tasks = db.relationship("Tasks", backref='user')
+    events = db.relationship("Events", backref='user')
     
 class Tasks(db.Model):
     __tablename__ = 'tasks'
@@ -149,6 +147,13 @@ class Tasks(db.Model):
     task = db.Column(db.String(64))
     date_completed = db.Column(db.DateTime())
 
+class Events(db.Model):
+    __tablename__ = 'events'
+    event_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
+    event = db.Column(db.String(64))
+    start = db.Column(db.DateTime())
+    end = db.Column(db.DateTime(),)
 
 class UserAddForm(Form):
     username = StringField("Username", validators=[validators.InputRequired()])
@@ -164,3 +169,8 @@ class UserLogin(Form):
 
 class TaskAddForm(Form):
     task = StringField("Task", validators=[validators.InputRequired()])
+
+class EventAddForm(Form):
+    event = StringField("Event", validators=[validators.InputRequired()])
+    start = DateField("Start", validators=[validators.InputRequired()])
+    end = DateField("End", validators=[validators.InputRequired()])
