@@ -1,6 +1,6 @@
 import os
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, render_template, url_for, request, redirect, flash
+from flask import Flask, render_template, url_for, request, redirect
 from flask_login import UserMixin, login_user, login_required, LoginManager, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, validators, Form, PasswordField, SelectField
@@ -23,9 +23,6 @@ def keltoC(degrees):
     return degrees - 273.15
 #list of available cities
 city = ['Toronto', 'New York City', 'Los Angeles', 'Chicago', 'Ottawa', "Vancouver", "Tokyo"]
-
-
-
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -50,6 +47,7 @@ def index():
 
 #can use current_user.id to get the current user
 @app.route('/calendar')
+@login_required
 def calendar():
     user = User.query.filter_by(id=current_user.id).first()
     return render_template('calendar.html')
@@ -114,14 +112,9 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user:
             if check_password_hash(user.password, pwd):
-                flash("Login Successful", category='success')
+                #logs in the user so they can access @login_required pages
                 login_user(user, remember=True)
                 return redirect(url_for('home'))
-            else:
-                flash("Wrong Password!")
-        else:
-            flash("Username is wrong!")
-            
     return render_template("login.html", form=form)
 
 #register page
@@ -132,18 +125,16 @@ def register():
         email_exists = User.query.filter_by(email=form.email.data).first()
         username_exists = User.query.filter_by(username=form.username.data).first()
 
-        if email_exists:
-            flash("Email already exists", category="error")
-        elif username_exists:
-            flash("Username already exists", category="error")
-        else:
-            user = User(username = form.username.data, password = generate_password_hash(form.password.data, method='pbkdf2:sha256'), email = form.email.data,
-                        fname = form.fname.data, lname = form.lname.data, city = form.city.data)
-            db.session.add(user)
-            db.session.commit()
-            login_user(user, remember=True)
-            flash("User Created")
-            return redirect(url_for('home', username = form.username.data))
+        #if the email and username are unique
+        if not email_exists:
+            if not username_exists:
+                user = User(username = form.username.data, password = generate_password_hash(form.password.data, method='pbkdf2:sha256'), email = form.email.data,
+                            fname = form.fname.data, lname = form.lname.data, city = form.city.data)
+                db.session.add(user)
+                db.session.commit()
+                #logs in the user so they don't have to input their info again to log in
+                login_user(user, remember=True)
+                return redirect(url_for('home', username = form.username.data))
         
     return render_template("register.html", form=form)
 
