@@ -19,9 +19,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
 API_KEY = "15df869839c74281f7b1914adbc67201"
 
+#converts kelvin to degrees
 def keltoC(degrees):
     return degrees - 273.15
-#list of available cities
+
+#list of available cities (can add more but too lazy rn)
 city = ['Toronto', 'New York City', 'Los Angeles', 'Chicago', 'Ottawa', "Vancouver", "Tokyo"]
 
 app = Flask(__name__)
@@ -32,6 +34,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
 
+#user authentication stuff
 login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
@@ -40,7 +43,7 @@ login_manager.init_app(app)
 def load_user(id):
     return User.query.get(int(id))
 
-#default route can change later
+#default route redirects user to login page
 @app.route('/')
 def index():
     return redirect('login')

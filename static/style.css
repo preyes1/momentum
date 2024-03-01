@@ -104,3 +104,13 @@ html, body{
     border-bottom: 2px solid darkgray;
     color: white;
   }
+
+  .task-input:focus{
+    outline:none;
+    
+  }
+
+.task-input[type="text"]{
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+}
