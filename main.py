@@ -17,7 +17,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 #weather api
 BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
-API_KEY = "15df869839c74281f7b1914adbc67201"
+#so that the key doesn't get exposed to people on GitHub
+#"open api_key in reading mode, then read() the content of the file"
+API_KEY = open('api_key', 'r').read()
 
 #converts kelvin to degrees
 def keltoC(degrees):
@@ -87,6 +89,7 @@ def home():
         return redirect(url_for('home'))
     return render_template('home.html', user = user, tasks = tasks, form=form, weather=weather, weatherS=weatherS)
 
+#delete tasks
 @app.route("/deletetask/<int:task_id>")
 def deleteTask(task_id):
     task = Tasks.query.get_or_404(task_id)
@@ -97,7 +100,6 @@ def deleteTask(task_id):
         return redirect(url_for('home', username = user.username))
     except:
         return "error"
-
 
 #login page
 @app.route('/login', methods=['GET', 'POST'])
