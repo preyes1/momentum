@@ -64,7 +64,7 @@ def home(username):
     user = cur.fetchone()
     userid = user[0]
     #gets all tasks that the user created
-    cur.execute(f"SELECT * FROM tasks WHERE id = '{userid}'")
+    cur.execute(f"SELECT * FROM tasks WHERE user_id = '{userid}'")
     tasks = cur.fetchall()
     cur.close()
 
