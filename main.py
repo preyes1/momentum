@@ -2,16 +2,14 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, url_for, request, redirect
 from flask_login import UserMixin, login_user, login_required, LoginManager, logout_user, current_user
-from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, validators, Form, PasswordField, SelectField
 from wtforms.validators import InputRequired, Length, ValidationError
 from wtforms.fields.datetime import DateField
-from wtforms.fields import TimeField
-from datetime import datetime
 import mysql.connector
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
-import datetime as dt
+from datetime import datetime as dt
+
 import requests
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -54,8 +52,27 @@ def index():
 @app.route('/calendar')
 @login_required
 def calendar():
-    user = User.query.filter_by(id=current_user.id).first()
-    return render_template('calendar.html')
+    cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
+    cur = cnx.cursor()
+    cur.execute(f"SELECT * FROM events WHERE user_id = '{current_user.id}'")
+    events = cur.fetchall()
+    return render_template('calendar.html', events= events)
+
+@app.route("/calendar/add/<string:start>", methods=['GET', 'POST'])
+@login_required
+def add(start):
+    form = EventAddForm(request.form)
+    nstart = start[4:15] #15 for just time
+    form.start1.data = dt.strptime(nstart, '%b %d %Y') #'%b %d %Y' for just date, '%b %d %Y %H:%M:%S'
+    date1 = dt.strptime(nstart, '%b %d %Y') #'%b %d %Y' for just date, '%b %d %Y %H:%M:%S'
+    form.start1.data = date1.strftime('%Y-%b-%d')
+    form.start1.data = dt.strptime(form.start1.data, '%Y-%b-%d')
+    if request.method == "POST":
+        event = Events(user_id = current_user.id, event = form.event.data, start1 = form.start1.data, end = form.end.data)
+        db.session.add(event)
+        db.session.commit()
+        return redirect(url_for('calendar'))
+    return render_template('eventAdd.html', form=form)
 
 #returns a personalized home screen
 @app.route('/home', methods=['GET', 'POST'])
@@ -147,7 +164,7 @@ def register():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    return redirect('/login')
 
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
@@ -174,8 +191,9 @@ class Events(db.Model):
     event_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     event = db.Column(db.String(64))
-    start = db.Column(db.DateTime())
-    end = db.Column(db.DateTime())
+    #cant name it start or else it will cause problems
+    start1 = db.Column(db.Date())
+    end = db.Column(db.Date())
 
 class UserAddForm(Form):
     username = StringField("Username", validators=[validators.InputRequired()])
@@ -194,5 +212,5 @@ class TaskAddForm(Form):
 
 class EventAddForm(Form):
     event = StringField("Event", validators=[validators.InputRequired()])
-    start = DateField("Start", validators=[validators.InputRequired()])
+    start1 = DateField("Start", validators=[validators.InputRequired()])
     end = DateField("End", validators=[validators.InputRequired()])

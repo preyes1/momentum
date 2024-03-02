@@ -1,0 +1,17 @@
+
+{% extends "main.html" %}
+{% block page_content%}
+<h1>New Event</h1>
+        <form method=post>
+            {{form.event.label}}
+            {{form.event()}}
+            <br>
+            {{form.start1.label}}
+            {{form.start1()}}
+            <br>
+            {{form.end.label}}
+            {{form.end()}}
+            <br>
+            <button type="submit">ADD EVENT</button>
+        </form>
+{% endblock %}
