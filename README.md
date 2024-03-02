@@ -1,5 +1,5 @@
 # Calendar-App
- This is a calendar app/ to-do list for a final assignment
+ This is a calendar app/ to-do list for a final assignment\n
 FUNCTIONS TO ADD:
  -add delete and update event function
  -add update task function (maybe)
