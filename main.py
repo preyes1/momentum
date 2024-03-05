@@ -1,13 +1,15 @@
+import os
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, url_for, request, redirect
 from flask_login import UserMixin, login_user, login_required, LoginManager, logout_user, current_user
 from wtforms import StringField, SubmitField, validators, Form, PasswordField, SelectField
-from wtforms.validators import InputRequired, Length, ValidationError #could add this later
+from wtforms.validators import InputRequired, Length, ValidationError
 from wtforms.fields.datetime import DateField
 import mysql.connector
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from datetime import datetime as dt
+
 import requests
 from werkzeug.security import generate_password_hash, check_password_hash
 
