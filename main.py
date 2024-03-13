@@ -9,7 +9,6 @@ import mysql.connector
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from datetime import datetime as dt
-
 import requests
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -18,6 +17,7 @@ BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
 #so that the key doesn't get exposed to people on GitHub
 #"open api_key in reading mode, then read() the content of the file"
 API_KEY = open('api_key', 'r').read()
+
 
 #converts kelvin to degrees
 def keltoC(degrees):
@@ -93,6 +93,7 @@ def home():
     CITY = user[6]
     url = BASE_URL + "appid=" + API_KEY + "&q=" + CITY
     response = requests.get(url).json()
+   
     #number list
     weather = [round(keltoC(response['main']['temp']), 1), round(keltoC(response['main']['feels_like']), 1)]
     #string list
@@ -133,7 +134,8 @@ def login():
         cur.close()
         user = User.query.filter_by(username=username).first()
         if user:
-            if check_password_hash(user.password, pwd):
+            #could turn this into a verify_password() function
+            if check_password_hash(user.password, pwd): 
                 #logs in the user so they can access @login_required pages
                 login_user(user, remember=True)
                 return redirect(url_for('home'))
