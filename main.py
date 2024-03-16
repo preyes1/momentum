@@ -36,7 +36,7 @@ migrate = Migrate(app,db)
 
 #user authentication stuff
 login_manager = LoginManager()
-login_manager.login_view = "login"
+login_manager.login_view = "index"
 login_manager.init_app(app)
 
 @login_manager.user_loader
@@ -46,7 +46,7 @@ def load_user(id):
 #default route redirects user to login page
 @app.route('/')
 def index():
-    return redirect('login')
+    return render_template('about.html')
 
 #can use current_user.id to get the current user
 @app.route('/calendar')
