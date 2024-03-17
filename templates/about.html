@@ -1,0 +1,103 @@
+<title>About</title>
+{% block page_content%}
+<style>
+  html,
+  body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    color: white;
+    background-color: #333333;
+  }
+  .left-side{
+    width: 50%;
+    float: left;
+    height: 100%;
+  }
+  .right-side{
+    width: 50%;
+    float: right;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background-color: #F5E8AA;
+    /* dark yellow #EE9626*/
+  }
+  .top {
+    position: absolute;
+    left: 20px;
+  }
+  .div {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50%;
+    margin: 0 auto;
+  }
+  .description {
+    width: 50%;
+    margin: 0 auto;
+    animation: fadeIn 2s;
+  }
+
+  .login-button {
+    font-size: 1rem;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+  }
+  .login-button a {
+    color: white;
+    text-decoration: none;
+  }
+  .register-button {
+    font-size: 1rem;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+  }
+  .register-button a {
+    color: grey;
+    text-decoration: none;
+  }
+  img {
+    position: absolute;
+    top: 220px;
+    right: 150px;
+    height: 300px;
+    width: 300px;
+    animation: fadeIn 2s;
+  }
+  @keyframes fadeIn {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+  }
+</style>
+<div class="left-side">
+  <div class="top">
+    <h1>creativename</h1>
+  </div>
+  <div class="div">
+    <div class="description">
+      <h1>Stay organized.</h1>
+      <h1>Effortlessly manage your schedule.</h1>
+      <button class="login-button" style="background-color: cornflowerblue">
+        <a href="/login">Sign in</a>
+      </button>
+      <button class="register-button" style="background-color: azure">
+        <a href="/register">Get Started</a>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="right-side">
+  <div class="di">
+    <div class="images">
+      <img src="static/img1.svg" />
+    </div>
+  </div>
+</div>
+{% endblock%}

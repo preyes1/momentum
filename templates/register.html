@@ -1,30 +1,103 @@
-{% extends "main.html" %}
-{% block title %}Register{% endblock %}
+{% extends "main.html" %} {% block title %}Register{% endblock %} {% block
+page_content%}
+<style>
+  .body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    animation: fadeIn 2s;
+  }
+  .register-container h1 {
+    color: cornflowerblue;
+  }
+  .register-container {
+    width: 50vh;
+  }
+  .left-form {
+    float: left;
+  }
+  .right-form {
+    float: right;
+  }
+  .fname,
+  .lname,
+  .username,
+  .password,
+  .email,
+  .city {
+    color: #a8a8a8;
+  }
 
-{% block page_content%}
-    <div>
-        <h1>Create an Account</h1>
-        <form method=post>
-            {{form.fname.label}}
-            {{form.fname()}}
-            <br>
-            {{form.lname.label}}
-            {{form.lname()}}
-            <br>
-            {{form.email.label}}
-            {{form.email()}}
-            <br>
-            {{form.username.label}}
-            {{form.username()}}
-            <br>
-            {{form.password.label}}
-            {{form.password()}}
-            <br>
-            {{form.city.label}}
-            {{form.city()}}
-        <button type="submit">REGISTER</button>
-        </form>
-    </div>
-    <h5><a href="/login">Login</a></h5>
+  .register input[type="text"],
+  .register input[type="password"] {
+    width: 85%;
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    background-color: #3e3e3e;
+    outline: none;
+    color: white;
+  }
+  .register button {
+    left: 5px;
+    background-color: cornflowerblue;
+    padding: 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 95%;
+    color: white;
+  }
+  .login-create {
+    display: flex;
+    justify-content: center;
+    color: #a8a8a8;
+    text-decoration: none;
+  }
+  .bottom-wave {
+    position: fixed;
+    bottom: 0;
+  }
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+</style>
+<div class="body">
+  <div class="register-container">
+    <h1>Create an Account</h1>
+    <form class="register" method="post">
+      <div class="left-form">
+        <p class="fname">{{form.fname.label}}</p>
+        {{form.fname()}}
+        <br />
+        <p class="lname">{{form.lname.label}}</p>
+        {{form.lname()}}
+        <br />
+        <p class="email">{{form.email.label}}</p>
+        {{form.email()}}
+      </div>
+      <div class="right-form">
+        <p class="username">{{form.username.label}}</p>
+        {{form.username()}}
+        <br />
+        <p class="password">{{form.password.label}}</p>
+        {{form.password()}}
+        <br />
+        <p class="city">{{form.city.label}}</p>
+        {{form.city()}}
+      </div>
+      <button type="submit"><b>REGISTER</b></button>
+    </form>
+    <h5><a class="login-create" href="/login">Login</a></h5>
+  </div>
+</div>
+<img class="bottom-wave" src="static/wave (2) (1).png" />
 
 {% endblock %}
