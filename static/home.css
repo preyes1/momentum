@@ -6,7 +6,7 @@
 }
 
 .div2{
-
+    position: relative;
     width: 50%;
     float: left;
     background-color: #252525;
@@ -94,8 +94,86 @@
     position: absolute;
     left: 20px;
 }
-.logout{
+.weather-container{
+    position: absolute;
+    bottom: 50px;
+    left: 15px;
+}
+.logout-container{
     position: absolute;
     bottom: 0;
-    left: 20px;
+    width: 20%;
+    background-color: white;
+    justify-content: center;
+    text-align: center;
+}
+.div2 .header .greeting{
+    position: absolute;
+    left: 150px;
+    top: 50px;
+}
+.greeting h2 {
+    color: #646464;
+}
+.div2 .header .date-container {
+    position: absolute;
+    left: 40px;
+    top: 55px;
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.div2 .header .date-container .date {
+    
+    text-align: center;
+}
+.list{
+    bottom: 100px;
+    left: 55px;
+    width: 100%;
+}
+.list-container {
+    position: absolute;
+    top: 200px;
+    left: 55px;
+    width: 80%;
+    
+}
+
+.new-task {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #3D3D3D;
+    border-radius: 8px;
+    
+    
+}
+
+.task-input{
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 20px;
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.task li {
+    display: inline-block;
+    margin: 5px;
+    padding: 0;
+    font-weight: 700;
+}
+
+.task ul {
+    background-color: #3D3D3D;
+    border-radius: 12px;
+    
+}
+.task {
+    left: 55px;
 }

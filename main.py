@@ -105,6 +105,8 @@ def home():
         db.session.add(task)
         db.session.commit()
         return redirect(url_for('home'))
+    #reverses tasks so the newest task will be at the top
+    tasks.reverse()
     return render_template('home.html', user = user, tasks = tasks, form=form, weather=weather, weatherS=weatherS)
 
 #delete tasks

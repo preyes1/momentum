@@ -1,6 +1,13 @@
 {% extends "main.html" %} {% block title %}Login{% endblock %} {% block
 page_content%}
 <style>
+  .logo a {
+    position: absolute;
+    left: 20px;
+    color: cornflowerblue;
+    animation: fadeIn 2s;
+    text-decoration: none;
+  }
     .body {
         display: flex;
         justify-content: center;
@@ -54,6 +61,7 @@ page_content%}
   }
 </style>
 <div class="everything">
+  <h1 class="logo"><a href="{{url_for('index')}}">creativename</a></h1>
 <div class="body">
   
   <div class="login-container">

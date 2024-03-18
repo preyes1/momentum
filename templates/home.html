@@ -1,11 +1,9 @@
-{% extends "main.html" %}
-{% block styles %}
-<link href="/static/main.css" rel="stylesheet">
-<link href="/static/home.css" rel="stylesheet">
-{% endblock %}
-    {% block page_content %}
-    <div class="div1">
-        <!--
+{% extends "main.html" %} {% block styles %}
+<link href="/static/main.css" rel="stylesheet" />
+<link href="/static/home.css" rel="stylesheet" />
+{% endblock %} {% block page_content %}
+<div class="div1">
+  <!--
         <div class="hello">
             <h1>Hello,</h1>
         </div>
@@ -13,33 +11,55 @@
             <h1>{{user.4}}</h1>
         </div>
         <div class="weather"><h1>{{weather.0}}°C<br>{{weatherS.2}}, {{weatherS.1}} </h1></div>-->
-        <div class="top">
-            <h1>creativename</h1>
-        </div>
-        <h1 class="logout">Log out</h1>
+  <div class="top">
+    <h1>creativename</h1>
+  </div>
+  <a href="{{url_for('logout')}}"
+    > <div class="logout-container">
+        <p>Log Out</p>
+    </div></a
+  >
+  <div class="weather-container">
+    <div class="weather">
+        <h1>{{weather.0}}°C</h1><h2>{{weatherS.2}}, {{weatherS.1}}</h2> 
     </div>
+  </div>
+</div>
 
-    <div class="div2">
-       <!--<div class="list">
-            <table>
-            {% for task in tasks %}
-            <tr>
-                <td class="tasks"><h1>{{task.2}}</h1></td>
-                <td><a href="/deletetask/{{task.0}}">Delete</a></td>
-            </tr>
-            {% endfor %}
-            <tr>
-                <td>
-                    <form method="post" class="new-task">
-                        {{form.task(class="task-input")}}
-                        <button type="submit" class="new-task-button">New Task</button>
-                    </form>
-                </td>
-            </tr>
-            </table>
-        </div>--> 
-        <h1>Good to see you Again.</h1>
-        
+<div class="div2">
+  <div class="header">
+    <div class="date-container">
+      <div class="date">
+        <h2>Feb</h2>
+        <h2>4</h2>
+      </div>
     </div>
-    <div class="div3"></div>
-    {% endblock %}
+    <div class="greeting">
+      <h1>Hey {{user.4}}!</h1>
+      <h2>What's your plan for today?</h2>
+    </div>
+  </div>
+  <div class="list-container">
+    <div class="list">
+      <form method="post" class="new-task">
+        {{form.task(class="task-input", placeholder="New Task")}}
+        <button hidden type="submit" class="new-task-button">New Task</button>
+      </form>
+
+      {% for task in tasks %}
+      <ul class="task">
+        <ul>
+          <li class="tasks"><p>{{task.2}}</p></li>
+          <li>
+            <a href="/deletetask/{{task.0}}"
+              ><img src="static/trash.svg" style="height: 20px; width: 20px"
+            /></a>
+          </li>
+        </ul>
+      </ul>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<div class="div3"></div>
+{% endblock %}
