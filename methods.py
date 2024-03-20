@@ -63,3 +63,6 @@ def date_to_string_FULL(date):
     date[1] = month_to_string(date[1])
     return date
 
+#converts kelvin to degrees
+def keltoC(degrees):
+    return degrees - 273.15

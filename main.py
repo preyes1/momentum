@@ -11,21 +11,14 @@ from flask_bootstrap import Bootstrap
 from datetime import datetime as dt
 import requests
 from werkzeug.security import generate_password_hash, check_password_hash
-from methods import date_to_string, date_to_string_FULL
+from methods import date_to_string, date_to_string_FULL, keltoC
+from city import city
 
 #weather api
 BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
 #so that the key doesn't get exposed to people on GitHub
 #"open api_key in reading mode, then read() the content of the file"
 API_KEY = open('api_key', 'r').read()
-
-
-#converts kelvin to degrees
-def keltoC(degrees):
-    return degrees - 273.15
-
-#list of available cities (can add more but too lazy rn)
-city = ['Toronto', 'New York City', 'Los Angeles', 'Chicago', 'Ottawa', "Vancouver", "Tokyo"]
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -76,9 +69,9 @@ def add(start):
     return render_template('eventAdd.html', form=form)
 
 #returns a personalized home screen
-@app.route('/home', methods=['GET', 'POST'])
+@app.route('/<username>', methods=['GET', 'POST'])
 @login_required
-def home():
+def home(username):
     form = TaskAddForm(request.form)
     cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
     cur = cnx.cursor()
@@ -108,7 +101,7 @@ def home():
         task = Tasks(user_id = userid, task = form.task.data)
         db.session.add(task)
         db.session.commit()
-        return redirect(url_for('home'))
+        return redirect(url_for('home', username = current_user.username))
     #reverses tasks so the newest task will be at the top
     tasks.reverse()
     return render_template('home.html', user = user, tasks = tasks, form=form, 
@@ -146,7 +139,7 @@ def login():
             if check_password_hash(user.password, pwd): 
                 #logs in the user so they can access @login_required pages
                 login_user(user, remember=True)
-                return redirect(url_for('home'))
+                return redirect(url_for('home', username = user.username))
     return render_template("login.html", form=form)
 
 #register page

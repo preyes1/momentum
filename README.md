@@ -6,4 +6,8 @@ FUNCTIONS TO ADD:
  -add time functionality for setting events (right now only the date can be changed, time is permanently 00:00:00)    
  -send email to remind users of their calendar events. (30 mins before scheduled time)    
     
- -make overall app look nicer 
+ -make overall app look nicer   
+
+ -add user roles USER and ADMIN. (is_admin = 1 or 0)   
+ -add settings page including (apply for admin)   
+ -include validations in registration
