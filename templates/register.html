@@ -1,6 +1,12 @@
 {% extends "main.html" %} {% block title %}Register{% endblock %} {% block
 page_content%}
 <style>
+  .logo{
+    position: absolute;
+    left: 20px;
+    animation: fadeIn 2s;
+    color: cornflowerblue;
+  }
   .body {
     display: flex;
     justify-content: center;
@@ -33,11 +39,13 @@ page_content%}
   .register input[type="password"] {
     width: 85%;
     padding: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
     border-radius: 8px;
     background-color: #3e3e3e;
     outline: none;
     color: white;
+    
+    
   }
   .register button {
     left: 5px;
@@ -69,6 +77,9 @@ page_content%}
     }
   }
 </style>
+<div class="logo">
+  <h1>creativename</h1>
+</div>
 <div class="body">
   <div class="register-container">
     <h1>Create an Account</h1>
