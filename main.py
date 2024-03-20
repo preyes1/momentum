@@ -11,6 +11,7 @@ from flask_bootstrap import Bootstrap
 from datetime import datetime as dt
 import requests
 from werkzeug.security import generate_password_hash, check_password_hash
+from methods import date_to_string, date_to_string_FULL
 
 #weather api
 BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
@@ -99,6 +100,9 @@ def home():
     #string list
     weatherS = [response['weather'][0]['description'], response['sys']['country'], response['name']]
     
+    current_date_raw = dt.now().strftime('%Y-%m-%d')
+    current_date = date_to_string(current_date_raw)
+    current_date_full = date_to_string_FULL(current_date_raw)
     
     if request.method == "POST":
         task = Tasks(user_id = userid, task = form.task.data)
@@ -107,7 +111,9 @@ def home():
         return redirect(url_for('home'))
     #reverses tasks so the newest task will be at the top
     tasks.reverse()
-    return render_template('home.html', user = user, tasks = tasks, form=form, weather=weather, weatherS=weatherS)
+    return render_template('home.html', user = user, tasks = tasks, form=form, 
+                           weather=weather, weatherS=weatherS, current_date = current_date,
+                           current_date_full = current_date_full)
 
 #delete tasks
 @app.route("/deletetask/<int:task_id>")
