@@ -42,6 +42,7 @@ def load_user(id):
 def index():
     return render_template('about.html')
 
+#not implemented anymore
 #can use current_user.id to get the current user
 @app.route('/calendar')
 @login_required
@@ -52,6 +53,7 @@ def calendar():
     events = cur.fetchall()
     return render_template('calendar.html', events= events)
 
+#not implemented anymore
 @app.route("/calendar/add/<string:start>", methods=['GET', 'POST'])
 @login_required
 def add(start):
@@ -67,7 +69,7 @@ def add(start):
         db.session.commit()
         return redirect(url_for('calendar'))
     return render_template('eventAdd.html', form=form)
-
+    
 #returns a personalized home screen
 @app.route('/<username>', methods=['GET', 'POST'])
 @login_required
@@ -81,6 +83,8 @@ def home(username):
     #gets all tasks that the user created
     cur.execute(f"SELECT * FROM tasks WHERE user_id = '{userid}'")
     tasks = cur.fetchall()
+    #sorts list, tasks that are completed are at the end (so that they appear first)
+    tasks = sorted(tasks, key=lambda x: x[3], reverse=True)
     cur.close()
 
     #for the weather
@@ -117,6 +121,20 @@ def deleteTask(task_id):
         db.session.delete(task)
         db.session.commit()
         return redirect(url_for('home', username = user.username))
+    except:
+        return "error"
+
+#changes task completed to True
+@app.route("/checkbox/<int:task_id>")
+def checkTask(task_id):
+    task = Tasks.query.get_or_404(task_id)
+    if task.completed:
+        task.completed = False
+    else:
+        task.completed = True
+    try:
+        db.session.commit()
+        return redirect(url_for('home', username = current_user.username))
     except:
         return "error"
 
@@ -178,6 +196,7 @@ class User(db.Model, UserMixin):
     fname = db.Column(db.String(64))
     lname = db.Column(db.String(64))
     city = db.Column(db.String(64))
+    
 
     tasks = db.relationship("Tasks", backref='user')
     events = db.relationship("Events", backref='user')
@@ -187,7 +206,7 @@ class Tasks(db.Model):
     task_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     task = db.Column(db.String(64))
-    date_completed = db.Column(db.DateTime())
+    completed = db.Column(db.Boolean, default = False)
 
 class Events(db.Model):
     __tablename__ = 'events'
@@ -217,3 +236,4 @@ class EventAddForm(Form):
     event = StringField("Event", validators=[validators.InputRequired()])
     start1 = DateField("Start", validators=[validators.InputRequired()])
     end = DateField("End", validators=[validators.InputRequired()])
+

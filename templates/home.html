@@ -17,6 +17,27 @@
   <div class="top">
     <h1>creativename</h1>
   </div>
+  <div class="settings-list">
+    <a href="" style="text-decoration: none; color: white;"><ul class="settings-list-ul" style="padding-left:0;">
+      <ul class="settings-container">
+        <li class="account">
+          <img class='trash-bin' src="static/account.svg" style="height: 35px; width: 35px"
+        />
+        </li>
+        <li><p>Account</p></li>
+      </ul>
+    </a>
+    <a href="" style="text-decoration: none; color: white;">
+      <ul class="settings-container">
+        <li class="account">
+          <img class='trash-bin' src="static/Friends.svg" style="height: 35px; width: 35px"
+        />
+        </li>
+        <li><p>Friends</p></li>
+      </ul>
+    </a>
+    </ul>
+  </div>
   <a href="{{url_for('logout')}}"
     > <div class="logout-container">
         <p>Log Out</p>
@@ -53,12 +74,30 @@
       {% for task in tasks %}
       <ul class="task">
         <ul>
-            <li>
-            <a href="/deletetask/{{task.0}}"
-              ><img src="static/trash.svg" style="height: 22px; width: 22px"
+          {%if not task.3%}
+            <li class="trash-bin-container">
+            <a href="/checkbox/{{task.0}}"
+              ><img class='trash-bin' src="static/circle.svg" style="height: 35px; width: 35px"
             /></a>
+            </li>
+          {%else%}
+          <li class="trash-bin-container">
+            <a href="/checkbox/{{task.0}}"
+              ><img class='trash-bin' src="static/check.svg" style="height: 35px; width: 35px"
+              /></a>
           </li>
-          <li class="tasks"><p>{{task.2}}</p></li>
+          {% endif %}
+          <li class="tasks">
+            {% if task.3%}
+            <p style="text-decoration: line-through;">{{task.2}}</p>
+            {%else%}
+            <p>{{task.2}}</p>
+            {%endif%}
+            </li>
+          <li class="delete-button">
+            <a href="/deletetask/{{task.0}}" style="text-decoration: none; color: gray;">
+            <img src='static/delete.svg' height="10px" width="10px"> </a>
+          </li>
           
         </ul>
       </ul>
@@ -69,9 +108,11 @@
 <div class="div3">
   <div class="container">
     <header>
-      <p class="current-date">{{current_date_full.1}} {{current_date_full.0}}</p>
       <div class="icons">
         <span id="prev" class="material-symbols-outlined">chevron_left</span>
+      </div>
+      <p class="current-date">{{current_date_full.1}} {{current_date_full.0}}</p>
+      <div class="icons">
         <span id="next" class="material-symbols-outlined">chevron_right</span>
       </div>
     </header>

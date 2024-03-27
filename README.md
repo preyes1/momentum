@@ -10,4 +10,6 @@ FUNCTIONS TO ADD:
 
  -add user roles USER and ADMIN. (is_admin = 1 or 0)   
  -add settings page including (apply for admin)   
- -include validations in registration
+ -include validations in registration  
+ -implement a bar on the left screen that shows how many tasks they have done for the day
+ -add a customizable sound effect that plays every time they complete a task
