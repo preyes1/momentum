@@ -132,6 +132,9 @@
     position: inherit;
     left: 20px;
 }
+.settings-container {
+    
+}
 
 .logout-container{
     position: absolute;
@@ -150,6 +153,7 @@
 }
 .greeting h2 {
     color: #646464;
+    margin-top: 0;
 }
 .div2 .header .date-container {
     position: absolute;
@@ -213,8 +217,10 @@
 .task ul {
     background-color: #3D3D3D;
     border-radius: 12px;
-    
-    
+}
+.task .complete {
+    background-color: #323232;
+    border-radius: 12px;
 }
 .task {
     left: 55px;
@@ -323,4 +329,8 @@ header .icons span:last-child{
 }
 .days li.active::before{
     background: cornflowerblue;
+}
+.date-number{
+    text-decoration: none;
+    color: white;
 }
