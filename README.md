@@ -12,4 +12,5 @@ FUNCTIONS TO ADD:
  -add settings page including (apply for admin)   
  -include validations in registration  
  -implement a bar on the left screen that shows how many tasks they have done for the day
- -add a customizable sound effect that plays every time they complete a task
+ -add a customizable sound effect that plays every time they complete a task   
+ -add "lock in" feature (keeps user on a full screen with the task details and timer)
