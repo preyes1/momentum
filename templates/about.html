@@ -10,18 +10,18 @@
     color: white;
     background-color: #333333;
   }
-  .left-side{
+  .left-side {
     width: 50%;
     float: left;
     height: 100%;
   }
-  .right-side{
+  .right-side {
     width: 50%;
     float: right;
     height: 100%;
     display: flex;
     align-items: center;
-    background-color: #F5E8AA;
+    background-color: #f5e8aa;
     /* dark yellow #EE9626*/
   }
   .top {
@@ -74,32 +74,41 @@
     animation: fadeIn 2s;
   }
   @keyframes fadeIn {
-    0% {opacity: 0;}
-    100% {opacity: 1;}
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 </style>
-<div class="left-side">
-  <div class="top">
-    <h1>creativename</h1>
-  </div>
-  <div class="div">
-    <div class="description">
-      <h1>Stay organized.</h1>
-      <h1>Effortlessly manage your schedule.</h1>
-      <button class="login-button" style="background-color: cornflowerblue">
-        <a href="/register">Get Started</a>
-      </button>
-      <button class="register-button" style="background-color: azure">
-        <a href="/login">Sign in</a>
-      </button>
+<body>
+  <div class="left-side">
+    <div class="top">
+      <h1>creativename</h1>
+    </div>
+    <div class="div">
+      <div class="description">
+        <h1>Stay organized.</h1>
+        <h1>Effortlessly manage your schedule.</h1>
+        <button class="login-button" style="background-color: cornflowerblue">
+          <a href="/register">Get Started</a>
+        </button>
+        <button class="register-button" style="background-color: azure">
+          <a href="/login">Sign in</a>
+        </button>
+      </div>
     </div>
   </div>
-</div>
-<div class="right-side">
-  <div class="di">
-    <div class="images">
-      <img src="static/img1.svg" />
+  <div class="right-side">
+    <div class="di">
+      <div class="images">
+        <img src="static/img1.svg" />
+      </div>
     </div>
   </div>
-</div>
+  <div>
+    <h1>hello</h1>
+  </div>
+</body>
 {% endblock%}

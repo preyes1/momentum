@@ -11,6 +11,9 @@ dates = document.getElementsByClassName("date-number");
 // Year-Month-Date
 let buildDate = "";
 
+// Keeps variable even after page refresh
+let clickedDate = sessionStorage.getItem("clickedDate");
+
 // Gets the current date
 let date = new Date(),
 currYear = date.getFullYear(),
@@ -34,7 +37,13 @@ const renderCalendar = () =>{
     for(let i = 1; i <= lastDateofMonth; i++){
         let isToday = i === date.getDate() && currMonth === new Date().getMonth()
                         && currYear === new Date().getFullYear() ? "active" : "";
-        liTag += `<li class="${isToday} ${i}"><a class = "date-number">${i}</a></li>`; // adds a <li> element for every day in the month
+        // shortened if statement
+        let isClicked = i == clickedDate ? "active current" : "";
+        
+        console.log(`CLICKED DATE: ${clickedDate}`);
+        console.log(`INDEX: ${i}`);
+        console.log(`isClicked: ${isClicked}`)
+        liTag += `<li class="${isToday} ${i} ${isClicked}"><a class = "date-number">${i}</a></li>`; // adds a <li> element for every day in the month
         
     }
     currentDate.innerText = `${months[currMonth]} ${currYear}`;
@@ -44,6 +53,7 @@ const renderCalendar = () =>{
 renderCalendar();
 prevnextIcon.forEach(icon => {
     icon.addEventListener("click", () => {
+        
         
         //shortened if statement
         currMonth = icon.id === "prev" ? currMonth -1 : currMonth +1;
@@ -59,8 +69,15 @@ prevnextIcon.forEach(icon => {
     })
 })
 for(let i =0; i < dates.length; i++){
+    // If element is clicked it gets highlighted to a different
+    // color
     dates[i].addEventListener("click", function(){
         newFunc(i);
+        
+        clickedDate = (i+1).toString();
+        sessionStorage.setItem("clickedDate", clickedDate);
+        location.reload();
+        
     }
     )
 }

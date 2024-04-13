@@ -117,12 +117,17 @@
             <p>{{task.2}}</p>
             {%endif%}
             </li>
+            <li class="lockin-button">
+              <a href="/deletetask/{{task.0}}" style="text-decoration: none; color: gray;">
+              <img src='static/target.svg' height="20px" width="20px" style="transform: translate(-20%, 17%);"> </a>
+            </li>
           <li class="delete-button">
             <a href="/deletetask/{{task.0}}" style="text-decoration: none; color: gray;">
             <img src='static/delete.svg' height="10px" width="10px"> </a>
           </li>
           
         </ul>
+      </ul>
       </ul>
       {% endfor %}
     </div>
@@ -131,11 +136,11 @@
 <div class="div3">
   <div class="container">
     <header>
-      <div class="icons">
+      <div class="icons" style="visibility: hidden;">
         <span id="prev" class="material-symbols-outlined">chevron_left</span>
       </div>
       <p class="current-date"></p>
-      <div class="icons">
+      <div class="icons" style="visibility: hidden;">
         <span id="next" class="material-symbols-outlined">chevron_right</span>
       </div>
     </header>

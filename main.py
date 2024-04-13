@@ -27,6 +27,7 @@ bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'hard to guess string' 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123@localhost/calendardb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
 
@@ -125,7 +126,7 @@ def home(username):
     
     current_date = date_to_string(current_date_raw)
     current_date_full = date_to_string_FULL(current_date_raw)
-    
+
     print(form.task.data)
     print(f'{GLOBAL_DATE} hello is the most')
     if request.method == "POST" and form.task.data is not None:
@@ -146,7 +147,7 @@ def home(username):
     print("got here")
     return render_template('home.html', user = user, tasks = tasks, form=form, 
                            weather=weather, weatherS=weatherS, current_date = current_date,
-                           current_date_full = current_date_full)
+                           current_date_full = current_date_full, global_date = GLOBAL_DATE)
 
 #delete tasks
 @app.route("/deletetask/<int:task_id>")
