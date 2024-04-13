@@ -3,7 +3,9 @@
 <link href="/static/home.css" rel="stylesheet" />
 <!--FOR NEXT AND PREV CHEVRONS-->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
 <script src="{{url_for('static', filename='script.js')}}" defer></script>
+
 {% endblock %} {% block page_content %}
 <div class="div1">
   <!--
@@ -15,7 +17,7 @@
         </div>
         <div class="weather"><h1>{{weather.0}}°C<br>{{weatherS.2}}, {{weatherS.1}} </h1></div>-->
   <div class="top">
-    <h1>creativename</h1>
+    <a href="{{url_for('home', username=user.1)}}" style="color: cornflowerblue; text-decoration: none;"><h1>creativename</h1></a>
   </div>
   <div class="settings-list">
     <a href="" style="text-decoration: none; color: white;"><ul class="settings-list-ul" style="padding-left:0;">
@@ -24,7 +26,7 @@
           <img class='trash-bin' src="static/account.svg" style="height: 35px; width: 35px"
         />
         </li>
-        <li><p>Account</p></li>
+        <li style="left: 30px;"><p>Account</p></li>
       </ul>
     </a>
     
@@ -34,7 +36,7 @@
           <img class='trash-bin' src="static/Friends.svg" style="height: 35px; width: 35px"
         />
         </li>
-        <li><p>Friends</p></li>
+        <li style="left: 30px;"><p>Friends</p></li>
       </ul>
     </a>
     </ul>
@@ -45,7 +47,7 @@
           <img class='trash-bin' src="static/admin.svg" style="height: 35px; width: 35px"
         />
         </li>
-        <li><p>Dev Tools</p></li>
+        <li style="left: 30px;"><p>Dev Tools</p></li>
       </ul>
     </a>
     {%endif%}
@@ -72,7 +74,14 @@
       </div>
     </div>
     <div class="greeting">
-      <h1>Hey {{user.4}}!</h1>
+      <div style="display: flex; padding-bottom: 0;">
+        <h1>Hey {{user.4}}!</h1>
+        <img src="static/waving-hand.png" 
+        style="
+        height: 40px; width: 40px;
+        transform: translate(30%, 47%);">
+      
+      </div>
       <h2>What's your plan for today?</h2>
     </div>
   </div>
@@ -85,14 +94,16 @@
 
       {% for task in tasks %}
       <ul class="task">
-        <ul>
+        
           {%if not task.3%}
+          <ul>
             <li class="trash-bin-container">
             <a href="/checkbox/{{task.0}}"
               ><img class='trash-bin' src="static/circle.svg" style="height: 35px; width: 35px"
             /></a>
             </li>
           {%else%}
+          <ul class="complete">
           <li class="trash-bin-container">
             <a href="/checkbox/{{task.0}}"
               ><img class='trash-bin' src="static/check.svg" style="height: 35px; width: 35px"
@@ -106,12 +117,17 @@
             <p>{{task.2}}</p>
             {%endif%}
             </li>
+            <li class="lockin-button">
+              <a href="/deletetask/{{task.0}}" style="text-decoration: none; color: gray;">
+              <img src='static/target.svg' height="20px" width="20px" style="transform: translate(-20%, 17%);"> </a>
+            </li>
           <li class="delete-button">
             <a href="/deletetask/{{task.0}}" style="text-decoration: none; color: gray;">
             <img src='static/delete.svg' height="10px" width="10px"> </a>
           </li>
           
         </ul>
+      </ul>
       </ul>
       {% endfor %}
     </div>
@@ -120,11 +136,11 @@
 <div class="div3">
   <div class="container">
     <header>
-      <div class="icons">
+      <div class="icons" style="visibility: hidden;">
         <span id="prev" class="material-symbols-outlined">chevron_left</span>
       </div>
-      <p class="current-date">{{current_date_full.1}} {{current_date_full.0}}</p>
-      <div class="icons">
+      <p class="current-date"></p>
+      <div class="icons" style="visibility: hidden;">
         <span id="next" class="material-symbols-outlined">chevron_right</span>
       </div>
     </header>

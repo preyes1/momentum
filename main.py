@@ -1,6 +1,6 @@
 import os
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, jsonify
 from flask_login import UserMixin, login_user, login_required, LoginManager, logout_user, current_user
 from wtforms import StringField, SubmitField, validators, Form, PasswordField, SelectField
 from wtforms.validators import InputRequired, Length, ValidationError
@@ -20,11 +20,14 @@ BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
 #"open api_key in reading mode, then read() the content of the file"
 API_KEY = open('api_key', 'r').read()
 
+GLOBAL_DATE = ""
+
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'hard to guess string' 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123@localhost/calendardb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
 
@@ -41,6 +44,7 @@ def load_user(id):
 @app.route('/')
 def index():
     return render_template('about.html')
+
 
 #not implemented anymore
 #can use current_user.id to get the current user
@@ -70,6 +74,18 @@ def add(start):
         return redirect(url_for('calendar'))
     return render_template('eventAdd.html', form=form)
     
+#gets json from javascript 
+@app.route('/process', methods=['GET', 'POST'])
+def process():
+    data = request.get_json()
+    date = data['value']
+    #date is in "YYYY MM DD" format
+    global GLOBAL_DATE
+    GLOBAL_DATE = date
+    return redirect(url_for('home', username = current_user.username))
+    
+ 
+
 #returns a personalized home screen
 @app.route('/<username>', methods=['GET', 'POST'])
 @login_required
@@ -81,11 +97,21 @@ def home(username):
     user = cur.fetchone()
     userid = user[0]
     #gets all tasks that the user created
-    cur.execute(f"SELECT * FROM tasks WHERE user_id = '{userid}'")
+    current_date_raw = dt.now().strftime('%Y-%m-%d')
+    print(GLOBAL_DATE)
+    if GLOBAL_DATE != '':
+        cur.execute(f"SELECT * FROM tasks WHERE user_id = '{userid}' AND date = '{GLOBAL_DATE}'")
+        print("tried")
+    else:
+        cur.execute(f"SELECT * FROM tasks WHERE user_id = '{userid}' AND date = '{current_date_raw}'")
+        print("did this instead")
     tasks = cur.fetchall()
+    print(tasks)
     #sorts list, tasks that are completed are at the end (so that they appear first)
     tasks = sorted(tasks, key=lambda x: x[3], reverse=True)
     cur.close()
+
+   
 
     #for the weather
     CITY = user[6]
@@ -97,20 +123,31 @@ def home(username):
     #string list
     weatherS = [response['weather'][0]['description'], response['sys']['country'], response['name']]
     
-    current_date_raw = dt.now().strftime('%Y-%m-%d')
+    
     current_date = date_to_string(current_date_raw)
     current_date_full = date_to_string_FULL(current_date_raw)
-    
-    if request.method == "POST":
-        task = Tasks(user_id = userid, task = form.task.data)
-        db.session.add(task)
-        db.session.commit()
+
+    print(form.task.data)
+    print(f'{GLOBAL_DATE} hello is the most')
+    if request.method == "POST" and form.task.data is not None:
+        print("did you reall post?")
+        if GLOBAL_DATE != "":
+            task = Tasks(user_id = userid, task = form.task.data, date=GLOBAL_DATE)
+            db.session.add(task)
+            db.session.commit()
+            print("posted global")
+        else:
+            task = Tasks(user_id = userid, task = form.task.data, date=current_date_raw)
+            db.session.add(task)
+            db.session.commit()
+            print("posted current_date_raw")
         return redirect(url_for('home', username = current_user.username))
     #reverses tasks so the newest task will be at the top
     tasks.reverse()
+    print("got here")
     return render_template('home.html', user = user, tasks = tasks, form=form, 
                            weather=weather, weatherS=weatherS, current_date = current_date,
-                           current_date_full = current_date_full)
+                           current_date_full = current_date_full, global_date = GLOBAL_DATE)
 
 #delete tasks
 @app.route("/deletetask/<int:task_id>")
@@ -196,6 +233,7 @@ class User(db.Model, UserMixin):
     fname = db.Column(db.String(64))
     lname = db.Column(db.String(64))
     city = db.Column(db.String(64))
+    role = db.Column(db.String(64))
     
 
     tasks = db.relationship("Tasks", backref='user')
@@ -207,6 +245,7 @@ class Tasks(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     task = db.Column(db.String(64))
     completed = db.Column(db.Boolean, default = False)
+    date = db.Column(db.String(64))
 
 class Events(db.Model):
     __tablename__ = 'events'
@@ -224,6 +263,7 @@ class UserAddForm(Form):
     fname = StringField("First Name", validators=[validators.InputRequired()])
     lname = StringField("Last Name", validators=[validators.InputRequired()])
     city = SelectField("City", choices=city)
+    
 
 class UserLogin(Form):
     username = StringField("Username", validators=[validators.InputRequired()])
