@@ -167,12 +167,17 @@ def register():
     if request.method == "POST":
         email_exists = User.query.filter_by(email=form.email.data).first()
         username_exists = User.query.filter_by(username=form.username.data).first()
+        admin_exists = User.query.filter_by(id = 1).first()
 
         #if the email and username are unique
         if not email_exists:
             if not username_exists:
                 user = User(username = form.username.data, password = generate_password_hash(form.password.data, method='pbkdf2:sha256'), email = form.email.data,
                             fname = form.fname.data, lname = form.lname.data, city = form.city.data)
+                if not admin_exists:
+                    user.role = 'ADMIN'
+                else:
+                    user.role = 'STANDARD'
                 db.session.add(user)
                 db.session.commit()
                 #logs in the user so they don't have to input their info again to log in
@@ -187,6 +192,20 @@ def logout():
     logout_user()
     return redirect('/login')
 
+#View Users (admin page)
+@app.route("/adminView")
+@login_required
+def adminView():
+    if current_user.id == 1:
+        cnx = mysql.connector.connect(user = 'root', password='123', database='calendardb')
+        cur = cnx.cursor()
+        cur.execute("SELECT * FROM user")
+        users = cur.fetchall()
+        cur.close()
+        return render_template("adminView.html", users = users)
+    else:
+        return redirect(url_for('home', username = current_user.username))
+
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -196,6 +215,7 @@ class User(db.Model, UserMixin):
     fname = db.Column(db.String(64))
     lname = db.Column(db.String(64))
     city = db.Column(db.String(64))
+    role = db.Column(db.String(64))
     
 
     tasks = db.relationship("Tasks", backref='user')

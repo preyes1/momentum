@@ -1,0 +1,40 @@
+{% extends "main.html" %} 
+{% block title %}Admin View{% endblock %}
+
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Students</h1>
+</div>
+
+
+<br/>
+<table class="table table_hover table-bordered table-striped">
+    
+    
+    <tr>
+        <th>User ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>City</th>
+        <th>Role</th>
+    </tr>
+     {%for user in users%}
+    <tr>
+        <td>{{user.0}} </td>
+        <td>{{user.1}}</td>  
+        <td>{{user.3}} </td>
+        <td>{{user.4}} </td>
+        <td>{{user.5}} </td>
+        <td>{{user.6}} </td>
+        <td>{{user.7}} </td>
+
+    </tr>
+    {%endfor%}
+</table>
+
+<a href="{{(url_for('home', username = current_user.username))}}">Home</a>
+
+{% endblock %}
