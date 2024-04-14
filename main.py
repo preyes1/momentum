@@ -204,12 +204,17 @@ def register():
     if request.method == "POST":
         email_exists = User.query.filter_by(email=form.email.data).first()
         username_exists = User.query.filter_by(username=form.username.data).first()
+        admin_exists = User.query.filter_by(id = 1).first()
 
         #if the email and username are unique
         if not email_exists:
             if not username_exists:
                 user = User(username = form.username.data, password = generate_password_hash(form.password.data, method='pbkdf2:sha256'), email = form.email.data,
                             fname = form.fname.data, lname = form.lname.data, city = form.city.data)
+                if not admin_exists:
+                    user.role = 'ADMIN'
+                else:
+                    user.role = 'STANDARD'
                 db.session.add(user)
                 db.session.commit()
                 #logs in the user so they don't have to input their info again to log in
@@ -223,6 +228,52 @@ def register():
 def logout():
     logout_user()
     return redirect('/login')
+
+#View Users (admin page)
+@app.route("/adminView")
+@login_required
+def adminView():
+    if current_user.role == 'ADMIN':
+        cnx = mysql.connector.connect(user = 'root', password='123', database='calendardb')
+        cur = cnx.cursor()
+        cur.execute("SELECT * FROM user")
+        users = cur.fetchall()
+        cur.close()
+        return render_template("adminView.html", users = users)
+    else:
+        return redirect(url_for('home', username = current_user.username))
+
+@app.route("/deleteUser/<int:id>")
+@login_required
+def deleteUser(id):
+    if current_user.role == 'ADMIN':
+        user_to_delete = User.query.get_or_404(id)
+        try:
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            return redirect("/adminView")
+        except:
+            return redirect("/adminView")
+    else:
+        return redirect(url_for('home', username = current_user.username))
+
+
+@app.route("/userRole/<int:id>")
+@login_required
+def userRole(id):
+    if current_user.role == 'ADMIN':
+        user_to_update= User.query.get_or_404(id)
+        if user_to_update.role == 'ADMIN':
+            user_to_update.role = 'STANDARD'
+        else:
+            user_to_update.role = 'ADMIN'
+        try:
+            db.session.commit()
+            return redirect("/adminView")
+        except:
+            return redirect("/adminView")
+    else:
+        return redirect(url_for('home', username = current_user.username))
 
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
