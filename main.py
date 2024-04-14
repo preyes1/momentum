@@ -84,6 +84,25 @@ def process():
     GLOBAL_DATE = date
     return redirect(url_for('home', username = current_user.username))
     
+@app.route('/addseconds', methods=['GET', 'POST'])
+def addSeconds():
+    data = request.get_json()
+    seconds = data['value']
+    cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
+    cur = cnx.cursor()
+    cur.execute(f"SELECT * FROM user WHERE username = '{current_user.username}'")
+    user = cur.fetchone()
+    if user[8]:
+        user_seconds = user[8] + seconds
+    else:
+        user_seconds = seconds
+    current_user.seconds = user_seconds
+    try:
+        db.session.commit()
+    except:
+        return "error"
+    
+    return redirect(url_for('home', username = current_user.username))
  
 
 #returns a personalized home screen
@@ -109,6 +128,7 @@ def home(username):
     print(tasks)
     #sorts list, tasks that are completed are at the end (so that they appear first)
     tasks = sorted(tasks, key=lambda x: x[3], reverse=True)
+    seconds = user[8]
     cur.close()
 
    
@@ -147,7 +167,8 @@ def home(username):
     print("got here")
     return render_template('home.html', user = user, tasks = tasks, form=form, 
                            weather=weather, weatherS=weatherS, current_date = current_date,
-                           current_date_full = current_date_full, global_date = GLOBAL_DATE)
+                           current_date_full = current_date_full, global_date = GLOBAL_DATE,
+                            seconds = seconds)
 
 #delete tasks
 @app.route("/deletetask/<int:task_id>")
@@ -223,6 +244,11 @@ def register():
         
     return render_template("register.html", form=form)
 
+@app.route("/lock/<task>")
+@login_required
+def lockin(task):
+    return render_template("lockin.html", task=task, username=current_user.username)
+
 @app.route("/logout")
 @login_required
 def logout():
@@ -285,7 +311,7 @@ class User(db.Model, UserMixin):
     lname = db.Column(db.String(64))
     city = db.Column(db.String(64))
     role = db.Column(db.String(64))
-    
+    seconds = db.Column(db.Integer)
 
     tasks = db.relationship("Tasks", backref='user')
     events = db.relationship("Events", backref='user')
