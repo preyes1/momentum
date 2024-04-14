@@ -196,13 +196,45 @@ def logout():
 @app.route("/adminView")
 @login_required
 def adminView():
-    if current_user.id == 1:
+    if current_user.role == 'ADMIN':
         cnx = mysql.connector.connect(user = 'root', password='123', database='calendardb')
         cur = cnx.cursor()
         cur.execute("SELECT * FROM user")
         users = cur.fetchall()
         cur.close()
         return render_template("adminView.html", users = users)
+    else:
+        return redirect(url_for('home', username = current_user.username))
+
+@app.route("/deleteUser/<int:id>")
+@login_required
+def deleteUser(id):
+    if current_user.role == 'ADMIN':
+        user_to_delete = User.query.get_or_404(id)
+        try:
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            return redirect("/adminView")
+        except:
+            return redirect("/adminView")
+    else:
+        return redirect(url_for('home', username = current_user.username))
+
+
+@app.route("/userRole/<int:id>")
+@login_required
+def userRole(id):
+    if current_user.role == 'ADMIN':
+        user_to_update= User.query.get_or_404(id)
+        if user_to_update.role == 'ADMIN':
+            user_to_update.role = 'STANDARD'
+        else:
+            user_to_update.role = 'ADMIN'
+        try:
+            db.session.commit()
+            return redirect("/adminView")
+        except:
+            return redirect("/adminView")
     else:
         return redirect(url_for('home', username = current_user.username))
 
