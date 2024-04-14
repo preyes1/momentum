@@ -335,7 +335,11 @@ header .icons span:last-child{
     text-decoration: none;
     color: white;
 }
-
+.seconds-container{
+    position: absolute;
+    bottom: 30px;
+    right: 50px;
+}
 .current::before{
     background: green !important; /*To overwrite the active::before color*/
 }

@@ -1,0 +1,103 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+    <style>
+        html, body{
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+        }
+        .main{
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background-image: url('/static/never-give-up.jpg');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+        .title-ul{
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .countdown-container{
+            position: absolute;
+            left: 50%;
+            top: 55%;
+            width: 75px;
+        }
+        .btn {
+        -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 20px;
+  background: #3498db;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+  
+            
+}
+.btn1{
+    position: absolute;
+    left: 45%;
+    top: 65%;
+}
+.btn2{
+    position: absolute;
+    left: 45%;
+    top: 75%;
+}
+
+.btn:hover {
+  background: #3cb0fd;
+  text-decoration: none;
+}
+    </style>
+    <html>
+    <body>
+        <div class="main">
+            <ul class="title-ul">
+                <li>Task: </li>
+                <li> {{task}}</li>
+            </ul>
+            
+        </div>
+        <div class="countdown-container" style="display: flex; justify-content: space-between;">
+            <p id="countdown">0</p>
+            <p> seconds</p>
+        </div>
+        <div class="button-container">
+            <button class="btn btn1" onclick="gohome()">Update Seconds</button>
+        </div>
+        <div class="button-container-2">
+            <a class="btn btn2" href="/{{username}}">Return Home</a>
+            <p>{{username}}</p>
+        </div>
+    </body>
+</html>
+<script>
+    let seconds = 0;
+    const countdownEl = document.getElementById('countdown');
+    setInterval(updateCountdown, 1000);
+
+    function updateCountdown(){
+        countdownEl.innerHTML = `${seconds}`;
+        seconds++;
+    }
+    function gohome(){
+        
+        $.ajax({ 
+        url: '/addseconds', 
+        type: 'POST', 
+        contentType: 'application/json', 
+        data: JSON.stringify({ 'value': seconds }), 
+        error: function(error) { 
+            console.log(error); 
+        } 
+    });
+    location.reload()
+    }
+</script>

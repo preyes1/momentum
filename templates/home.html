@@ -118,8 +118,9 @@
             {%endif%}
             </li>
             <li class="lockin-button">
-              <a href="/deletetask/{{task.0}}" style="text-decoration: none; color: gray;">
-              <img src='static/target.svg' height="20px" width="20px" style="transform: translate(-20%, 17%);"> </a>
+              <a href="{{url_for('lockin', task = task.2, username= user.1)}}" style="text-decoration: none; color: gray;">
+          
+                <img src='static/target.svg' height="20px" width="20px" style="transform: translate(-20%, 17%);"> </a>
             </li>
           <li class="delete-button">
             <a href="/deletetask/{{task.0}}" style="text-decoration: none; color: gray;">
@@ -158,6 +159,9 @@
         
       </ul>
     </div>
+  </div>
+  <div class="seconds-container">
+    <p>You have locked in for: {{seconds}} seconds</p>
   </div>
 </div>
 {% endblock %}
