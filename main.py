@@ -99,6 +99,7 @@ def addSeconds():
     current_user.seconds = user_seconds
     try:
         db.session.commit()
+        
     except:
         return "error"
     
@@ -315,7 +316,7 @@ class User(db.Model, UserMixin):
 
     tasks = db.relationship("Tasks", backref='user')
     events = db.relationship("Events", backref='user')
-    
+
 class Tasks(db.Model):
     __tablename__ = 'tasks'
     task_id = db.Column(db.Integer, primary_key=True)
@@ -332,6 +333,18 @@ class Events(db.Model):
     #cant name it start or else it will cause problems
     start1 = db.Column(db.Date())
     end = db.Column(db.Date())
+
+class Friends(db.Model):
+    __tablename__ = 'friends'
+    friend_id = db.Column(db.Integer, primary_key=True)
+    user_id_1 = db.Column(db.Integer)
+    user_id_2 = db.Column(db.Integer)
+
+class Requests(db.Model):
+    __tablename__ = 'requests'
+    request_id = db.Column(db.Integer, primary_key=True)
+    user_id_from = db.Column(db.Integer)
+    user_id_to = db.Column(db.Integer)
 
 class UserAddForm(Form):
     username = StringField("Username", validators=[validators.InputRequired()])
