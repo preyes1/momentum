@@ -346,70 +346,85 @@ def friends():
     cur.close()
     #sending friend request
     if request.method == "POST":
-        try:
-            username = form.request.data
-            #3 validators with default values of True
-            valid = True
-            valid2 = True
-            valid3 = True
-            # checks if requested username is the user's username
-            if username == current_user.username:
-                valid3 = False
+        username = form.request.data
+        cnx = mysql.connector.connect()
+        cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
 
-            cnx = mysql.connector.connect()
-            cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
-            # Gets the user's id
-            cur = cnx.cursor()
-            cur.execute(f"SELECT id FROM user WHERE username = '{username}'")
-            user = cur.fetchone()
-            cur.close()
-            # Gets list of all requests made from current user and user sending request to
-            # this is to check if one of them have already sent a friend request to each other
-            cur = cnx.cursor()
-            cur.execute(f"SELECT * FROM requests WHERE user_id_from = '{current_user.id}' OR user_id_from = '{user}'")
-            prev_requests = cur.fetchall()
-            cur.close()
-            # Gets list of all friends of the current user and the user sending the request to
-            # this is to check if they are already friends
-            cur = cnx.cursor()
-            cur.execute(f"SELECT * FROM friends WHERE user_id_1 = '{current_user.id}' OR user_id_1 = '{user}'")
-            prev_friends = cur.fetchall()
-            cur.close()
+        # Checks if the username exists
+        cur = cnx.cursor()
+        cur.execute(f"SELECT username FROM user")
+        usernames = cur.fetchall()
+        cur.close()
+        exists = False
+        print(usernames)
+        for username_for in usernames:
+            if username_for[0] == username:
+                exists = True
+                break
+        if exists:
+            try:
+                #3 validators with default values of True
+                valid = True
+                valid2 = True
+                valid3 = True
+                # checks if requested username is the user's username
+                if username == current_user.username:
+                    valid3 = False
 
-            # for loop that checks if request has already been made
-            for req in prev_requests:
-                
-                if req[1] == current_user.id and req[2] == user[0]:
-                    valid = False
-                    break
-                elif req[1] == user[0] and req[2] == current_user.id:
-                    valid = False
-                    break
+                # Gets the user's id
+                cur = cnx.cursor()
+                cur.execute(f"SELECT id FROM user WHERE username = '{username}'")
+                user = cur.fetchone()
+                cur.close()
+                # Gets list of all requests made from current user and user sending request to
+                # this is to check if one of them have already sent a friend request to each other
+                cur = cnx.cursor()
+                cur.execute(f"SELECT * FROM requests WHERE user_id_from = '{current_user.id}' OR user_id_from = '{user}'")
+                prev_requests = cur.fetchall()
+                cur.close()
+                # Gets list of all friends of the current user and the user sending the request to
+                # this is to check if they are already friends
+                cur = cnx.cursor()
+                cur.execute(f"SELECT * FROM friends WHERE user_id_1 = '{current_user.id}' OR user_id_1 = '{user}'")
+                prev_friends = cur.fetchall()
+                cur.close()
+
+                # for loop that checks if request has already been made
+                for req in prev_requests:
+                    
+                    if req[1] == current_user.id and req[2] == user[0]:
+                        valid = False
+                        break
+                    elif req[1] == user[0] and req[2] == current_user.id:
+                        valid = False
+                        break
+                    else:
+                        valid = True
+                # for loop that checks if users are already friends
+                for fri in prev_friends:
+                    if fri[1] == current_user.id and fri[2] == user[0]:
+                        valid2 = False
+                        break
+                    elif fri[1] == user[0] and fri[2] == current_user.id:
+                        valid2 = False
+                        break
+                    else:
+                        valid2 = True
+                # If all 3 vaildators are true then the request can be sent
+                if valid and valid2 and valid3:
+                    request_to_add = Requests(user_id_from = current_user.id, user_id_to = user[0])
+                    db.session.add(request_to_add)
+                    db.session.commit()
+                    form.request.data = ""
                 else:
-                    valid = True
-            # for loop that checks if users are already friends
-            for fri in prev_friends:
-                if fri[1] == current_user.id and fri[2] == user[0]:
-                    valid2 = False
-                    break
-                elif fri[1] == user[0] and fri[2] == current_user.id:
-                    valid2 = False
-                    break
-                else:
-                    valid2 = True
-            # If all 3 vaildators are true then the request can be sent
-            if valid and valid2 and valid3:
-                request_to_add = Requests(user_id_from = current_user.id, user_id_to = user[0])
-                db.session.add(request_to_add)
-                db.session.commit()
-                form.request.data = ""
-            else:
-                form.request.data = ""
-                return render_template("friends.html", form=form, requests=user_requests, friends=user_friends)
+                    form.request.data = ""
+                    return render_template("friends.html", form=form, requests=user_requests, friends=user_friends)
+                    
                 
-            
-        except:
-            return "error"
+            except:
+                return "error"
+        else:
+            return render_template("friends.html", form=form, requests=user_requests, friends=user_friends)
         
     return render_template("friends.html", form=form, requests=user_requests, friends=user_friends)
 
@@ -446,7 +461,7 @@ def rejectFriend(id):
     # request_ = Requests.query.get_or_404(user.id) <-- this shouldnt work
     cnx = mysql.connector.connect()
     cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
-    cur = cnx.cursor()
+    cur = cnx.cursor(buffered=True)
     cur.execute(f"SELECT request_id FROM requests WHERE user_id_from = '{id}'")
     request_from = cur.fetchone()
     request_ = Requests.query.get_or_404(request_from)
@@ -470,7 +485,7 @@ class User(db.Model, UserMixin):
     lname = db.Column(db.String(64))
     city = db.Column(db.String(64))
     role = db.Column(db.String(64))
-    seconds = db.Column(db.Integer)
+    seconds = db.Column(db.Integer, default=0)
 
     tasks = db.relationship("Tasks", backref='user')
     events = db.relationship("Events", backref='user')
