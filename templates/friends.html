@@ -1,0 +1,126 @@
+{% extends "main.html" %} {% block styles %}
+<link href="/static/main.css" rel="stylesheet" />
+<link href="/static/home.css" rel="stylesheet" />
+<!--FOR NEXT AND PREV CHEVRONS-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<script src="{{url_for('static', filename='script.js')}}" defer></script>
+{% endblock %} {% block page_content %}
+
+<style>
+
+    .header-div{
+        position: absolute;
+        top: 30px;
+        left: 50px;
+    }
+    .div3{
+        background-color: #252525;
+    }
+
+</style>
+
+<html>
+<div class="div1">
+
+    <div class="top">
+      <h1>creativename</h1>
+    </div>
+    <div class="settings-list">
+      <a href="{{(url_for('home', username = current_user.username))}}" style="text-decoration: none; color: white;"><ul class="settings-list-ul" style="padding-left:0;">
+        <ul class="settings-container">
+          <li class="account">
+            <img class='trash-bin' src="static/home.svg" style="height: 35px; width: 35px"
+          />
+          </li>
+          <li><p>Home</p></li>
+        </ul>
+      </a>
+
+      </div>
+      <a href="{{url_for('logout')}}"> 
+        <div class="logout-container">
+            <p>Log Out</p>
+      </div>
+      </a>
+    </div>
+
+    <div class="div2">
+        <div class="header-div">
+            <div style="display: flex;">
+            <h1 style="margin: 0;">Friends</h1>
+            <img src="static/heart.png" 
+        style="
+        height: 26px; width: 50px;
+        transform: translate(30%, 47%);"></div>
+            <h2 style="color: #646464;">Here are your friends</h2>
+        </div>
+        <div class="list-container">
+            <div class="list">
+              <form method="post" class="new-task">
+                {{form.request(class="task-input", placeholder="Friend Request")}}
+                <button hidden type="submit" class="new-task-button">New Request</button>
+              </form>
+              
+              {% for friend in friends %}
+              <ul class="task">
+                
+                  
+                  <ul>
+                    <li class="trash-bin-container">
+                    
+                    </li>
+                  <li class="tasks">
+                    <p>{{friend.username}}</p>
+                    </li>
+                  <li class="delete-button">
+                    
+                    <img src='static/delete.svg' height="10px" width="10px"> 
+                  </li>
+                  
+                </ul>
+              </ul>
+              </ul>
+              {% endfor %}
+              
+            </div>
+          </div>
+    </div>
+    <div class="div3">
+        <div class="list-container">
+            <div class="list">
+    
+              <h1>Requests</h1>
+              {% for user in requests %}
+              <ul class="task">
+                
+                  
+                  <ul>
+                    <li class="trash-bin-container">
+                    
+                    </li>
+                  <li class="tasks">
+                    <p>{{user.username}}</p>
+                    </li>
+                  <li class="reject-button">
+                    <!--Cornflower blue is #6495ED-->
+                    <a href="/rejectfriend/{{user.id}}">
+                        <img src='static/deletered.svg' height="20px" width="20px"> 
+                    </a>
+                  </li>
+                  <li class="accept-button">
+                    <!--Cornflower blue is #6495ED-->
+                    <a href="/acceptfriend/{{user.id}}">
+                        <img src='static/checkBlue.svg' height="30px" width="30px"> 
+                    </a>
+                  </li>
+                  
+                </ul>
+              </ul>
+              </ul>
+              {% endfor %}
+              
+            </div>
+          </div>
+    </div>
+  </html>
+{% endblock %}

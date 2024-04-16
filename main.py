@@ -107,7 +107,7 @@ def addSeconds():
  
 
 #returns a personalized home screen
-@app.route('/<username>', methods=['GET', 'POST'])
+@app.route('/home/<username>', methods=['GET', 'POST'])
 @login_required
 def home(username):
     form = TaskAddForm(request.form)
@@ -301,6 +301,164 @@ def userRole(id):
             return redirect("/adminView")
     else:
         return redirect(url_for('home', username = current_user.username))
+    
+@app.route("/friends", methods=['GET', 'POST'])
+@login_required
+def friends():
+    form = FriendAddForm(request.form)
+    cnx = mysql.connector.connect()
+    cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
+    cur = cnx.cursor()
+    cur.execute(f"SELECT * FROM requests WHERE user_id_to = '{current_user.id}'")
+    requests = cur.fetchall()
+    i =0
+    
+    user_requests = []
+    # cant use the variable name request because it is already set
+    for request_ in requests:
+        # for each friend request, get the user who sent them and
+        # set it to the current request value (this is to get the 
+        # sender's username)
+        user_sent = User.query.get_or_404(request_[1])
+        user_requests.append(user_sent)
+        i += 1
+    # get all friends
+    cur.close()
+    cur = cnx.cursor()
+    cur.execute(f"SELECT * FROM friends WHERE user_id_1 = '{current_user.id}' OR user_id_2 = '{current_user.id}'")
+    friends = cur.fetchall()
+    i=0
+    print(friends)
+    user_friends = []
+    for friend in friends:
+        # for each friend, check which column does not contain the 
+        # current user's id then get the username of the user in 
+        # the other column
+        if friend[1] == current_user.id:
+            cur_friend = User.query.get_or_404(friend[2])
+            print(friend)
+            user_friends.append(cur_friend) 
+        else:
+            cur_friend = User.query.get_or_404(friend[1])
+            user_friends.append(cur_friend) 
+        i+=1
+
+    cur.close()
+    #sending friend request
+    if request.method == "POST":
+        try:
+            username = form.request.data
+            #3 validators with default values of True
+            valid = True
+            valid2 = True
+            valid3 = True
+            # checks if requested username is the user's username
+            if username == current_user.username:
+                valid3 = False
+
+            cnx = mysql.connector.connect()
+            cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
+            # Gets the user's id
+            cur = cnx.cursor()
+            cur.execute(f"SELECT id FROM user WHERE username = '{username}'")
+            user = cur.fetchone()
+            cur.close()
+            # Gets list of all requests made from current user and user sending request to
+            # this is to check if one of them have already sent a friend request to each other
+            cur = cnx.cursor()
+            cur.execute(f"SELECT * FROM requests WHERE user_id_from = '{current_user.id}' OR user_id_from = '{user}'")
+            prev_requests = cur.fetchall()
+            cur.close()
+            # Gets list of all friends of the current user and the user sending the request to
+            # this is to check if they are already friends
+            cur = cnx.cursor()
+            cur.execute(f"SELECT * FROM friends WHERE user_id_1 = '{current_user.id}' OR user_id_1 = '{user}'")
+            prev_friends = cur.fetchall()
+            cur.close()
+
+            # for loop that checks if request has already been made
+            for req in prev_requests:
+                
+                if req[1] == current_user.id and req[2] == user[0]:
+                    valid = False
+                    break
+                elif req[1] == user[0] and req[2] == current_user.id:
+                    valid = False
+                    break
+                else:
+                    valid = True
+            # for loop that checks if users are already friends
+            for fri in prev_friends:
+                if fri[1] == current_user.id and fri[2] == user[0]:
+                    valid2 = False
+                    break
+                elif fri[1] == user[0] and fri[2] == current_user.id:
+                    valid2 = False
+                    break
+                else:
+                    valid2 = True
+            # If all 3 vaildators are true then the request can be sent
+            if valid and valid2 and valid3:
+                request_to_add = Requests(user_id_from = current_user.id, user_id_to = user[0])
+                db.session.add(request_to_add)
+                db.session.commit()
+                form.request.data = ""
+            else:
+                form.request.data = ""
+                return render_template("friends.html", form=form, requests=user_requests, friends=user_friends)
+                
+            
+        except:
+            return "error"
+        
+    return render_template("friends.html", form=form, requests=user_requests, friends=user_friends)
+
+@app.route("/acceptfriend/<int:id>")
+@login_required
+def acceptFriend(id):
+    user = User.query.get_or_404(id)
+    # request_ = Requests.query.get_or_404(user.id) <-- this shouldnt work
+    cnx = mysql.connector.connect()
+    cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
+    cur = cnx.cursor(buffered=True)
+    cur.execute(f"SELECT request_id FROM requests WHERE user_id_from = '{id}'")
+    request_from = cur.fetchone()
+    print(request_from[0])
+    request_from = request_from[0]
+    print(request_from)
+    request_ = Requests.query.get_or_404(request_from)
+    print(request_.request_id)
+    cur.close()
+    try:
+        new_friend = Friends(user_id_1 = current_user.id, user_id_2 = user.id)
+        db.session.add(new_friend)
+        db.session.delete(request_)
+        db.session.commit()
+        
+    except:
+        return "error"
+    return redirect(url_for('friends'))
+
+@app.route("/rejectfriend/<int:id>")
+@login_required
+def rejectFriend(id):
+    user = User.query.get_or_404(id)
+    # request_ = Requests.query.get_or_404(user.id) <-- this shouldnt work
+    cnx = mysql.connector.connect()
+    cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
+    cur = cnx.cursor()
+    cur.execute(f"SELECT request_id FROM requests WHERE user_id_from = '{id}'")
+    request_from = cur.fetchone()
+    request_ = Requests.query.get_or_404(request_from)
+    cur.close()
+    try:
+        db.session.delete(request_)
+        db.session.commit()
+        
+    except:
+        return "error"
+    return redirect(url_for('friends'))
+
 
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
@@ -366,4 +524,7 @@ class EventAddForm(Form):
     event = StringField("Event", validators=[validators.InputRequired()])
     start1 = DateField("Start", validators=[validators.InputRequired()])
     end = DateField("End", validators=[validators.InputRequired()])
+
+class FriendAddForm(Form):
+    request = StringField("Request", validators=[validators.InputRequired()])
 

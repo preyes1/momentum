@@ -23,17 +23,17 @@
     <a href="" style="text-decoration: none; color: white;"><ul class="settings-list-ul" style="padding-left:0;">
       <ul class="settings-container">
         <li class="account">
-          <img class='trash-bin' src="static/account.svg" style="height: 35px; width: 35px"
+          <img class='trash-bin' src="/static/account.svg" style="height: 35px; width: 35px"
         />
         </li>
         <li style="left: 30px;"><p>Account</p></li>
       </ul>
     </a>
     
-    <a href="" style="text-decoration: none; color: white;">
+    <a href="/friends" style="text-decoration: none; color: white;">
       <ul class="settings-container">
         <li class="account">
-          <img class='trash-bin' src="static/Friends.svg" style="height: 35px; width: 35px"
+          <img class='trash-bin' src="/static/Friends.svg" style="height: 35px; width: 35px"
         />
         </li>
         <li style="left: 30px;"><p>Friends</p></li>
@@ -44,7 +44,7 @@
     <a href="/adminView" style="text-decoration: none; color: white;">
       <ul class="settings-container">
         <li class="account">
-          <img class='trash-bin' src="static/admin.svg" style="height: 35px; width: 35px"
+          <img class='trash-bin' src="/static/admin.svg" style="height: 35px; width: 35px"
         />
         </li>
         <li style="left: 30px;"><p>Dev Tools</p></li>
@@ -76,7 +76,7 @@
     <div class="greeting">
       <div style="display: flex; padding-bottom: 0;">
         <h1>Hey {{user.4}}!</h1>
-        <img src="static/waving-hand.png" 
+        <img src="/static/waving-hand.png" 
         style="
         height: 40px; width: 40px;
         transform: translate(30%, 47%);">
@@ -99,14 +99,14 @@
           <ul>
             <li class="trash-bin-container">
             <a href="/checkbox/{{task.0}}"
-              ><img class='trash-bin' src="static/circle.svg" style="height: 35px; width: 35px"
+              ><img class='trash-bin' src="/static/circle.svg" style="height: 35px; width: 35px"
             /></a>
             </li>
           {%else%}
           <ul class="complete">
           <li class="trash-bin-container">
             <a href="/checkbox/{{task.0}}"
-              ><img class='trash-bin' src="static/check.svg" style="height: 35px; width: 35px"
+              ><img class='trash-bin' src="/static/check.svg" style="height: 35px; width: 35px"
               /></a>
           </li>
           {% endif %}
@@ -120,11 +120,11 @@
             <li class="lockin-button">
               <a href="{{url_for('lockin', task = task.2)}}" style="text-decoration: none; color: gray;">
           
-                <img src='static/target.svg' height="20px" width="20px" style="transform: translate(-20%, 17%);"> </a>
+                <img src='/static/target.svg' height="20px" width="20px" style="transform: translate(-20%, 17%);"> </a>
             </li>
           <li class="delete-button">
             <a href="/deletetask/{{task.0}}" style="text-decoration: none; color: gray;">
-            <img src='static/delete.svg' height="10px" width="10px"> </a>
+            <img src='/static/delete.svg' height="10px" width="10px"> </a>
           </li>
           
         </ul>

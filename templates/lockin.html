@@ -74,12 +74,7 @@
       <ul class="title-ul">
         <li style="font-size: 25px;">Task:</li>
         <li class="task" style="font-size: 40px;">{{task}}</li>
-        <div class="button-container">
-            <button class="btn btn1" onclick="gohome()">Update Seconds</button>
-          </div>
-          <div class="button-container-2">
-            <a class="btn btn2" href="/{{username}}">Return Home</a>
-          </div>
+        
       </ul>
     </div>
     <div
@@ -92,7 +87,7 @@
       <button class="btn btn1" onclick="gohome()">Update Seconds</button>
     </div>
     <div class="button-container-2">
-      <a class="btn btn2" href="/{{username}}">Return Home</a>
+      <a class="btn btn2" href="{{url_for('home', username=username)}}">Return Home</a>
     </div>
   </body>
 </html>
