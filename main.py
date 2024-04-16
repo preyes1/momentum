@@ -436,18 +436,15 @@ def acceptFriend(id):
     cnx = mysql.connector.connect()
     cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
     cur = cnx.cursor(buffered=True)
-    cur.execute(f"SELECT request_id FROM requests WHERE user_id_from = '{id}'")
+    cur.execute(f"SELECT request_id FROM requests WHERE user_id_from = '{id}' AND user_id_to = '{current_user.id}'")
     request_from = cur.fetchone()
-    print(request_from[0])
-    request_from = request_from[0]
-    print(request_from)
-    request_ = Requests.query.get_or_404(request_from)
-    print(request_.request_id)
+    request_from = Requests.query.get_or_404(request_from)
+    print(request_from.request_id)
     cur.close()
     try:
         new_friend = Friends(user_id_1 = current_user.id, user_id_2 = user.id)
         db.session.add(new_friend)
-        db.session.delete(request_)
+        db.session.delete(request_from)
         db.session.commit()
         
     except:
@@ -462,7 +459,7 @@ def rejectFriend(id):
     cnx = mysql.connector.connect()
     cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
     cur = cnx.cursor(buffered=True)
-    cur.execute(f"SELECT request_id FROM requests WHERE user_id_from = '{id}'")
+    cur.execute(f"SELECT request_id FROM requests WHERE user_id_from = '{id}' AND user_id_to = '{current_user.id}'")
     request_from = cur.fetchone()
     request_ = Requests.query.get_or_404(request_from)
     cur.close()
@@ -474,6 +471,25 @@ def rejectFriend(id):
         return "error"
     return redirect(url_for('friends'))
 
+@app.route("/unfriend/<int:id>")
+@login_required
+def unFriend(id):
+    user = User.query.get_or_404(id)
+    # request_ = Requests.query.get_or_404(user.id) <-- this shouldnt work
+    cnx = mysql.connector.connect()
+    cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
+    cur = cnx.cursor(buffered=True)
+    cur.execute(f"SELECT friend_id FROM friends WHERE (user_id_1 = '{id}' AND user_id_2 = '{current_user.id}') OR (user_id_1 = '{current_user.id}' AND user_id_2 = '{id}')")
+    friend_to_delete = cur.fetchone()
+    friend_to_delete = Friends.query.get_or_404(friend_to_delete)
+    cur.close()
+    try:
+        db.session.delete(friend_to_delete)
+        db.session.commit()
+        
+    except:
+        return "error"
+    return redirect(url_for('friends'))
 
 class User(db.Model, UserMixin):
     __tablename__ = 'user'

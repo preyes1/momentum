@@ -343,6 +343,12 @@ header .icons span:last-child{
 .current::before{
     background: green !important; /*To overwrite the active::before color*/
 }
+.seconds-container{
+    left: 35px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+}
 
 @keyframes fadeIn {
     0% { opacity: 0; }
