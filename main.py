@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 from flask_login import UserMixin, login_user, login_required, LoginManager, logout_user, current_user
 from wtforms import StringField, SubmitField, validators, Form, PasswordField, SelectField
-from wtforms.validators import InputRequired, Length, ValidationError
+from wtforms.validators import InputRequired, Length, ValidationError, EqualTo
 from wtforms.fields.datetime import DateField
 import mysql.connector
 from flask_migrate import Migrate
@@ -463,6 +463,47 @@ def unFriend(id):
         return "error"
     return redirect(url_for('friends'))
 
+@app.route("/account", methods=['GET','POST'])
+@login_required
+def viewaccount():
+    form = UserAddForm(request.form)
+    user_to_update = User.query.get_or_404(current_user.id)
+    form.username.data = user_to_update.username
+    form.email.data = user_to_update.email
+    form.fname.data = user_to_update.fname
+    form.lname.data = user_to_update.lname
+    form.city.data = user_to_update.city
+
+    if request.method == 'POST':
+        user_to_update.username = request.form['username']
+        user_to_update.email = request.form['email']
+        user_to_update.fname = request.form['fname']
+        user_to_update.lname = request.form['lname']
+        user_to_update.city = request.form['city']
+
+        try:
+            db.session.commit()
+            return redirect("/account")
+        except:
+            return redirect("/account")
+    else:
+        return render_template("account.html", form = form, id=current_user.id)
+
+#Reset Password
+@app.route("/reset", methods=['POST', 'GET'])
+def reset():
+    form = Reset(request.form)
+    if request.method == 'POST':
+        user_to_update = User.query.get_or_404(current_user.id)
+        user_to_update.password = generate_password_hash(form.password.data, method="pbkdf2:sha256")
+        try:
+            db.session.commit()
+            logout_user()
+            return redirect(url_for('login'))
+        except:
+            return redirect(url_for('reset'))
+    return render_template("reset.html", form=form)
+
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -530,4 +571,8 @@ class EventAddForm(Form):
 
 class FriendAddForm(Form):
     request = StringField("Request", validators=[validators.InputRequired()])
+
+class Reset(Form):
+     password= PasswordField('Password:', validators=[validators.input_required(), EqualTo('password2', message='Passwords must match.')])
+     password2 = PasswordField('Confirm password', validators=[validators.input_required()])
 
