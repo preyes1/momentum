@@ -45,35 +45,6 @@ def load_user(id):
 def index():
     return render_template('about.html')
 
-
-#not implemented anymore
-#can use current_user.id to get the current user
-@app.route('/calendar')
-@login_required
-def calendar():
-    cnx = mysql.connector.connect(user='root', password='123', database='calendardb')
-    cur = cnx.cursor()
-    cur.execute(f"SELECT * FROM events WHERE user_id = '{current_user.id}'")
-    events = cur.fetchall()
-    return render_template('calendar.html', events= events)
-
-#not implemented anymore
-@app.route("/calendar/add/<string:start>", methods=['GET', 'POST'])
-@login_required
-def add(start):
-    form = EventAddForm(request.form)
-    nstart = start[4:15] #15 for just time
-    form.start1.data = dt.strptime(nstart, '%b %d %Y') #'%b %d %Y' for just date, '%b %d %Y %H:%M:%S'
-    date1 = dt.strptime(nstart, '%b %d %Y') #'%b %d %Y' for just date, '%b %d %Y %H:%M:%S'
-    form.start1.data = date1.strftime('%Y-%b-%d')
-    form.start1.data = dt.strptime(form.start1.data, '%Y-%b-%d')
-    if request.method == "POST":
-        event = Events(user_id = current_user.id, event = form.event.data, start1 = form.start1.data, end = form.end.data)
-        db.session.add(event)
-        db.session.commit()
-        return redirect(url_for('calendar'))
-    return render_template('eventAdd.html', form=form)
-    
 #gets json from javascript 
 @app.route('/process', methods=['GET', 'POST'])
 def process():
@@ -144,12 +115,9 @@ def home(username):
     #string list
     weatherS = [response['weather'][0]['description'], response['sys']['country'], response['name']]
     
-    
     current_date = date_to_string(current_date_raw)
     current_date_full = date_to_string_FULL(current_date_raw)
 
-    print(form.task.data)
-    print(f'{GLOBAL_DATE} hello is the most')
     if request.method == "POST" and form.task.data is not None:
         print("did you reall post?")
         if GLOBAL_DATE != "":
@@ -165,11 +133,16 @@ def home(username):
         return redirect(url_for('home', username = current_user.username))
     #reverses tasks so the newest task will be at the top
     tasks.reverse()
-    print("got here")
+    # Gets number of friends user has
+    cur = cnx.cursor()
+    cur.execute(f"SELECT * FROM friends WHERE user_id_1 = '{current_user.id}' OR user_id_2 = '{current_user.id}'")
+    friends = cur.fetchall()
+    cur.close()
+
     return render_template('home.html', user = user, tasks = tasks, form=form, 
                            weather=weather, weatherS=weatherS, current_date = current_date,
                            current_date_full = current_date_full, global_date = GLOBAL_DATE,
-                            seconds = seconds)
+                            seconds = seconds, friends_count = len(friends))
 
 #delete tasks
 @app.route("/deletetask/<int:task_id>")
@@ -328,7 +301,6 @@ def friends():
     cur.execute(f"SELECT * FROM friends WHERE user_id_1 = '{current_user.id}' OR user_id_2 = '{current_user.id}'")
     friends = cur.fetchall()
     i=0
-    print(friends)
     user_friends = []
     for friend in friends:
         # for each friend, check which column does not contain the 
@@ -418,15 +390,15 @@ def friends():
                     form.request.data = ""
                 else:
                     form.request.data = ""
-                    return render_template("friends.html", form=form, requests=user_requests, friends=user_friends)
+                    return render_template("friends.html", form=form, requests=user_requests, friends=user_friends, friend_count=len(user_friends))
                     
                 
             except:
                 return "error"
         else:
-            return render_template("friends.html", form=form, requests=user_requests, friends=user_friends)
+            return render_template("friends.html", form=form, requests=user_requests, friends=user_friends, friend_count=len(user_friends))
         
-    return render_template("friends.html", form=form, requests=user_requests, friends=user_friends)
+    return render_template("friends.html", form=form, requests=user_requests, friends=user_friends, friend_count=len(user_friends))
 
 @app.route("/acceptfriend/<int:id>")
 @login_required

@@ -10,13 +10,23 @@
     padding: 0;
     font-family: "Inter", sans-serif;
     color: white;
+    background-color: #3D3D3D;
+    
+  }
+  .container{
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(45deg, #d2001a, #7462ff, #f48e21, #23d5ab);
+    background-size: 300% 300%;
+    animation: color 12s ease-in-out;
+    animation: fadeIn 3s;
   }
   .main {
     
     height: 100vh;
     justify-content: center;
     align-items: center;
-    background-color: #3d3d3d;
+    
   }
   .title-ul {
     padding-top: 50px;
@@ -67,9 +77,26 @@
     background: #3cb0fd;
     text-decoration: none;
   }
+  @keyframes color{
+    0%{
+      background-position: 0 50%;
+    }
+    50%{
+      background-position: 100% 50%;
+    }
+    100%{
+      background-position: 0 50%;
+    }
+    
+  }
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
 </style>
 <html>
   <body>
+    <div class="container">
     <div class="main">
       <ul class="title-ul">
         <li style="font-size: 25px;">Task:</li>
@@ -89,6 +116,7 @@
     <div class="button-container-2">
       <a class="btn btn2" href="{{url_for('home', username=username)}}">Return Home</a>
     </div>
+  </div>
   </body>
 </html>
 <script>
