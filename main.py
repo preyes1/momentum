@@ -89,15 +89,11 @@ def home(username):
     userid = user[0]
     #gets all tasks that the user created
     current_date_raw = dt.now().strftime('%Y-%m-%d')
-    print(GLOBAL_DATE)
     if GLOBAL_DATE != '':
         cur.execute(f"SELECT * FROM tasks WHERE user_id = '{userid}' AND date = '{GLOBAL_DATE}'")
-        print("tried")
     else:
         cur.execute(f"SELECT * FROM tasks WHERE user_id = '{userid}' AND date = '{current_date_raw}'")
-        print("did this instead")
     tasks = cur.fetchall()
-    print(tasks)
     #sorts list, tasks that are completed are at the end (so that they appear first)
     tasks = sorted(tasks, key=lambda x: x[3], reverse=True)
     seconds = user[8]
@@ -119,17 +115,14 @@ def home(username):
     current_date_full = date_to_string_FULL(current_date_raw)
 
     if request.method == "POST" and form.task.data is not None:
-        print("did you reall post?")
         if GLOBAL_DATE != "":
             task = Tasks(user_id = userid, task = form.task.data, date=GLOBAL_DATE)
             db.session.add(task)
             db.session.commit()
-            print("posted global")
         else:
             task = Tasks(user_id = userid, task = form.task.data, date=current_date_raw)
             db.session.add(task)
             db.session.commit()
-            print("posted current_date_raw")
         return redirect(url_for('home', username = current_user.username))
     #reverses tasks so the newest task will be at the top
     tasks.reverse()
@@ -308,7 +301,6 @@ def friends():
         # the other column
         if friend[1] == current_user.id:
             cur_friend = User.query.get_or_404(friend[2])
-            print(friend)
             user_friends.append(cur_friend) 
         else:
             cur_friend = User.query.get_or_404(friend[1])
@@ -328,7 +320,6 @@ def friends():
         usernames = cur.fetchall()
         cur.close()
         exists = False
-        print(usernames)
         for username_for in usernames:
             if username_for[0] == username:
                 exists = True
@@ -411,7 +402,6 @@ def acceptFriend(id):
     cur.execute(f"SELECT request_id FROM requests WHERE user_id_from = '{id}' AND user_id_to = '{current_user.id}'")
     request_from = cur.fetchone()
     request_from = Requests.query.get_or_404(request_from)
-    print(request_from.request_id)
     cur.close()
     try:
         new_friend = Friends(user_id_1 = current_user.id, user_id_2 = user.id)
