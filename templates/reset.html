@@ -26,12 +26,8 @@
       .right-form {
         float: right;
       }
-      .fname,
-      .lname,
-      .username,
-      .password,
-      .email,
-      .city {
+   
+      .password {
         color: #a8a8a8;
       }
     
@@ -90,13 +86,12 @@
             
           </div>
           <div class="right-form">
-            <p class="password2">{{form.password2.label}}</p>
-            {{form.password2()}}
+           
             <br />
           </div>
           <button type="submit"><b>Update</b></button>
         </form>
-        <h5><a class="login-create" href="{{(url_for('home', username = current_user.username))}}">Cancel</a></h5>
+        <h5><a class="login-create" href="/account">Cancel</a></h5>
       </div>
     </div>
     <img class="bottom-wave" src="static/wave (2) (1).png" />

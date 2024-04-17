@@ -2,8 +2,8 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 from flask_login import UserMixin, login_user, login_required, LoginManager, logout_user, current_user
-from wtforms import StringField, SubmitField, validators, Form, PasswordField, SelectField
-from wtforms.validators import InputRequired, Length, ValidationError, EqualTo
+from wtforms import StringField, SubmitField, validators, Form, PasswordField, SelectField, ValidationError
+from wtforms.validators import InputRequired, Length, ValidationError, EqualTo, DataRequired
 from wtforms.fields.datetime import DateField
 import mysql.connector
 from flask_migrate import Migrate
@@ -573,6 +573,5 @@ class FriendAddForm(Form):
     request = StringField("Request", validators=[validators.InputRequired()])
 
 class Reset(Form):
-     password= PasswordField('Password:', validators=[validators.input_required(), EqualTo('password2', message='Passwords must match.')])
-     password2 = PasswordField('Confirm password', validators=[validators.input_required()])
+     password= PasswordField('Password:', validators=[validators.InputRequired()])
 
