@@ -26,6 +26,8 @@ app = Flask(__name__)
 bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'hard to guess string' 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123@localhost/calendardb'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123@localhost/calendardb'
+# postgres://todo_databse_preyes_user:Wa4xc2zb4F0IEAGmKfPsYwlt5MaZRcoX@dpg-cojjpn0cmk4c73bsl3ng-a.ohio-postgres.render.com/todo_databse_preyes
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 db = SQLAlchemy(app)
@@ -354,7 +356,6 @@ def friends():
 
                 # for loop that checks if request has already been made
                 for req in prev_requests:
-                    
                     if req[1] == current_user.id and req[2] == user[0]:
                         valid = False
                         break
@@ -374,6 +375,9 @@ def friends():
                     else:
                         valid2 = True
                 # If all 3 vaildators are true then the request can be sent
+                print(valid)
+                print(valid2)
+                print(valid3)
                 if valid and valid2 and valid3:
                     request_to_add = Requests(user_id_from = current_user.id, user_id_to = user[0])
                     db.session.add(request_to_add)
