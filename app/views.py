@@ -159,7 +159,7 @@ def lockin(task):
 @login_required
 def adminView():
     if current_user.role == 'ADMIN':
-        cnx = mysql.connector.connect(user = 'root', password='123', database='calendardb')
+        cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
         cur = cnx.cursor()
         cur.execute("SELECT * FROM user")
         users = cur.fetchall()
@@ -204,7 +204,6 @@ def userRole(id):
 @login_required
 def friends():
     form = FriendAddForm(request.form)
-    cnx = mysql.connector.connect()
     cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
     cur = cnx.cursor()
     cur.execute(f"SELECT * FROM requests WHERE user_id_to = '{current_user.id}'")
@@ -243,7 +242,6 @@ def friends():
     #sending friend request
     if request.method == "POST":
         username = form.request.data
-        cnx = mysql.connector.connect()
         cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
 
         # Checks if the username exists
@@ -328,7 +326,6 @@ def friends():
 def acceptFriend(id):
     user = User.query.get_or_404(id)
     # request_ = Requests.query.get_or_404(user.id) <-- this shouldnt work
-    cnx = mysql.connector.connect()
     cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
     cur = cnx.cursor(buffered=True)
     cur.execute(f"SELECT request_id FROM requests WHERE user_id_from = '{id}' AND user_id_to = '{current_user.id}'")
@@ -350,7 +347,6 @@ def acceptFriend(id):
 def rejectFriend(id):
     user = User.query.get_or_404(id)
     # request_ = Requests.query.get_or_404(user.id) <-- this shouldnt work
-    cnx = mysql.connector.connect()
     cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
     cur = cnx.cursor(buffered=True)
     cur.execute(f"SELECT request_id FROM requests WHERE user_id_from = '{id}' AND user_id_to = '{current_user.id}'")
@@ -370,7 +366,6 @@ def rejectFriend(id):
 def unFriend(id):
     user = User.query.get_or_404(id)
     # request_ = Requests.query.get_or_404(user.id) <-- this shouldnt work
-    cnx = mysql.connector.connect()
     cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
     cur = cnx.cursor(buffered=True)
     cur.execute(f"SELECT friend_id FROM friends WHERE (user_id_1 = '{id}' AND user_id_2 = '{current_user.id}') OR (user_id_1 = '{current_user.id}' AND user_id_2 = '{id}')")
