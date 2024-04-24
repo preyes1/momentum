@@ -23,7 +23,7 @@ def login():
     if request.method == "POST":
         username = form.username.data
         pwd = form.password.data
-        cnx = mysql.connector.connect(user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
+        cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
         cur = cnx.cursor()
         cur.execute(f"SELECT username, password FROM user WHERE username = '{username}'")
         user = cur.fetchone() #create something that happens if user inputs invalid details

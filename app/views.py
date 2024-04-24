@@ -45,7 +45,7 @@ def process():
 def addSeconds():
     data = request.get_json()
     seconds = data['value']
-    cnx = mysql.connector.connect(user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
+    cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
     cur = cnx.cursor()
     cur.execute(f"SELECT * FROM user WHERE username = '{current_user.username}'")
     user = cur.fetchone()
@@ -68,7 +68,7 @@ def addSeconds():
 @login_required
 def home(username):
     form = TaskAddForm(request.form)
-    cnx = mysql.connector.connect(user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
+    cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
     cur = cnx.cursor()
     cur.execute(f"SELECT * FROM user WHERE username = '{current_user.username}'")
     user = cur.fetchone()
@@ -205,7 +205,7 @@ def userRole(id):
 def friends():
     form = FriendAddForm(request.form)
     cnx = mysql.connector.connect()
-    cnx = mysql.connector.connect(user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
+    cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
     cur = cnx.cursor()
     cur.execute(f"SELECT * FROM requests WHERE user_id_to = '{current_user.id}'")
     requests = cur.fetchall()
@@ -244,7 +244,7 @@ def friends():
     if request.method == "POST":
         username = form.request.data
         cnx = mysql.connector.connect()
-        cnx = mysql.connector.connect(user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
+        cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
 
         # Checks if the username exists
         cur = cnx.cursor()
@@ -329,7 +329,7 @@ def acceptFriend(id):
     user = User.query.get_or_404(id)
     # request_ = Requests.query.get_or_404(user.id) <-- this shouldnt work
     cnx = mysql.connector.connect()
-    cnx = mysql.connector.connect(user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
+    cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
     cur = cnx.cursor(buffered=True)
     cur.execute(f"SELECT request_id FROM requests WHERE user_id_from = '{id}' AND user_id_to = '{current_user.id}'")
     request_from = cur.fetchone()
@@ -351,7 +351,7 @@ def rejectFriend(id):
     user = User.query.get_or_404(id)
     # request_ = Requests.query.get_or_404(user.id) <-- this shouldnt work
     cnx = mysql.connector.connect()
-    cnx = mysql.connector.connect(user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
+    cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
     cur = cnx.cursor(buffered=True)
     cur.execute(f"SELECT request_id FROM requests WHERE user_id_from = '{id}' AND user_id_to = '{current_user.id}'")
     request_from = cur.fetchone()
@@ -371,7 +371,7 @@ def unFriend(id):
     user = User.query.get_or_404(id)
     # request_ = Requests.query.get_or_404(user.id) <-- this shouldnt work
     cnx = mysql.connector.connect()
-    cnx = mysql.connector.connect(user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
+    cnx = mysql.connector.connect(host="creativename-db.cr8eauc2qc9a.us-east-2.rds.amazonaws.com", user='preyes1', password='4BevQ1NL9fxQkDMwn2Rh', database='creativename-db')
     cur = cnx.cursor(buffered=True)
     cur.execute(f"SELECT friend_id FROM friends WHERE (user_id_1 = '{id}' AND user_id_2 = '{current_user.id}') OR (user_id_1 = '{current_user.id}' AND user_id_2 = '{id}')")
     friend_to_delete = cur.fetchone()
