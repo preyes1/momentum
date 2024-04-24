@@ -1,0 +1,356 @@
+.div1{
+    width: 20%;
+    float: left;
+    background-color: #3D3D3D;
+    height: 100vh;
+    position: fixed;
+}
+
+.div2{
+    position: relative;
+    width: 50%;
+    left: 20%;
+    animation: fadeIn 1s;
+}
+.div3{
+    float: left;
+    position: fixed;
+    top: 0;
+    width: 30%;
+    left: 70%;
+    background-color: #3D3D3D;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    
+}
+/*
+.list{
+    display: flex;
+    font-size: 25px;
+    align-items: center;
+    padding: 20px;
+}
+
+.hello{
+    /*background-color: pink;*//*
+    font-size: 35px;
+    position: absolute;
+    top: 70px;
+    left: 145px;
+    
+}
+.name{
+   /* Should make this smaller in case they have a long name *//*
+    font-size: 40px;
+    position: absolute;
+    top: 140px;
+    left: 160px;
+    background: linear-gradient(to top, red, yellow);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+}
+.weather{
+    position: absolute;
+    font-size: 20px;
+    bottom: 50px;
+    left: 150px;
+}
+.new-task{
+    position: relative;
+    border:none;
+}
+.tasks{
+    font-size: 10px
+}
+.new-task-button {
+    background-color: #04AA6D; /* Green *//*
+    border: none;
+    color: black;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }
+
+.task-input{
+    border:none;
+    background-color: #333333;
+    border-bottom: 2px solid darkgray;
+    color: white;
+  }
+
+  .task-input:focus{
+    outline:none;
+    
+  }
+
+.task-input[type="text"]{
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+}
+*/
+.top{
+    position: absolute;
+    left: 20px;
+    color: cornflowerblue;
+}
+.weather-container{
+    position: absolute;
+    bottom: 50px;
+    left: 15px;
+}
+
+.settings-list{
+    position: absolute;
+    left: 0;
+    top: 100px;
+    width: 250px;
+    
+}
+.settings-list-ul{
+    
+}
+.settings-container{
+    position: relative;
+    width: 250px;
+    left: 10px;
+    background-color: #252525;
+    border-radius: 12px;
+    display:flex;
+    align-items: center;
+    padding-left: 0;
+    list-style-type: none;
+    height: 65px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    
+}
+.settings-container li{
+    position: inherit;
+    left: 20px;
+}
+.settings-container {
+    
+}
+
+.logout-container{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: cornflowerblue;
+    color: white;
+    font-weight: 700;
+    justify-content: center;
+    text-align: center;
+}
+.div2 .header .greeting{
+    position: absolute;
+    left: 150px;
+    top: 50px;
+}
+.greeting h2 {
+    color: #646464;
+    margin-top: 0;
+}
+.div2 .header .date-container {
+    position: absolute;
+    left: 40px;
+    top: 55px;
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.div2 .header .date-container .date {
+    
+    text-align: center;
+}
+.list{
+    bottom: 100px;
+    left: 55px;
+    width: 100%;
+}
+.list .task ul{
+    
+    padding: 0;
+}
+.list-container {
+    position: absolute;
+    top: 200px;
+    left: 55px;
+    width: 80%;
+    
+}
+
+.new-task {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #3D3D3D;
+    border-radius: 8px;
+    
+    
+}
+
+.task-input{
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 20px;
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.task li {
+    display: inline-block;
+    margin: 5px;
+    padding: 0;
+    font-weight: 700;
+    left: 0;
+}
+
+.task ul {
+    background-color: #3D3D3D;
+    border-radius: 12px;
+}
+.task .complete {
+    background-color: #323232;
+    border-radius: 12px;
+}
+.task {
+    left: 55px;
+    
+}
+.task .trash-bin-container {
+    position: relative;
+    top: 50%;
+    transform: translate(0%, 27%); 
+    left: 7px;
+}
+.trash-bin{
+    position: relative;
+    bottom: 0;
+    
+}
+.delete-button{
+    visibility: hidden;
+    float: right;
+    align-items: center;
+    transform: translate(-100%, 85%);
+    text-decoration: none;
+}
+.task ul:hover .delete-button{
+    visibility: visible;
+    
+}
+
+.div3 .container{
+    width: 290px;
+    background-color: #252525;
+    border-radius: 12px;
+    height: 400px;
+    position: relative;
+    top: 100px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.div3 .container header{
+    display: flex;
+    align-items: center;
+    padding: 25px 30px 10px;
+    justify-content: space-between;
+}
+header .current-date{
+    font-size: 1.45rem;
+    font-weight: 700;
+}
+header .icons span{
+    height: 28px;
+    width: 28px;
+    margin: 0 1px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 28px;
+    border-radius: 50%;
+    background-color: #3D3D3D;
+}
+header .icons span:last-child{
+    margin-right: -10px;
+}
+.calendar{
+    padding: 5px;
+    
+}
+.calendar ul{
+    
+    padding: 0;
+    display: flex;
+    list-style: none;
+    flex-wrap: wrap;
+    text-align: center;
+}
+.calendar .days li{
+    margin-bottom: 12px;
+    cursor: pointer;
+    z-index: 1;
+}
+.calendar .weeks li{
+    font-weight: 700;
+}
+
+.calendar ul li {
+    position: relative;
+    width: calc(100% / 7);
+}
+.calendar .days li::before{
+    position: absolute;
+    content: "";
+    height: 30px;
+    width: 30px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    border-radius: 50%;
+}
+.days li:hover::before{
+    background: #3D3D3D;
+}
+.days li.inactive{
+    color: #646464;
+}
+.days li.active{
+    color: black;
+}
+.days li.active::before{
+    background: cornflowerblue;
+}
+.date-number{
+    text-decoration: none;
+    color: white;
+}
+.seconds-container{
+    position: absolute;
+    bottom: 30px;
+    right: 50px;
+}
+.current::before{
+    background: green !important; /*To overwrite the active::before color*/
+}
+.seconds-container{
+    left: 35px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
