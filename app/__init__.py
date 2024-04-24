@@ -9,6 +9,8 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'hard to guess string' 
+    # postgresql://todo_databse_preyes_user:Wa4xc2zb4F0IEAGmKfPsYwlt5MaZRcoX@dpg-cojjpn0cmk4c73bsl3ng-a.ohio-postgres.render.com/todo_databse_preyes
+    
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config["TEMPLATES_AUTO_RELOAD"] = True
