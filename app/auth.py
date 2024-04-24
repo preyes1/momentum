@@ -58,9 +58,9 @@ def register():
                     user.role = 'STANDARD'
                 db.session.add(user)
                 db.session.commit()
-                #logs in the user so they don't have to input their info again to log in
-                login_user(user, remember=True)
-                return redirect(url_for('views.home', username = form.username.data))
+                # logs in the user so they don't have to input their info again to log in
+                # login_user(user, remember=True)
+                return redirect(url_for('auth.login'))
         
     return render_template("register.html", form=form)
 
