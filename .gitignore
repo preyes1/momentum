@@ -1,3 +1,4 @@
-
-api_key
-/venv
+__pycache__/
+migrations/
+venv/
+.gitattributes
