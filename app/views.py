@@ -23,7 +23,7 @@ BASE_URL = "http://api.openweathermap.org/data/2.5/weather?"
 # so that the key doesn't get exposed to people on GitHub
 # "open api_key in reading mode, then read() the content of the file"
 # API_KEY = open('api_key', 'r').read()
-API_KEY = "28f6a4de82e7310e8a53a422bee18322"
+API_KEY = "[API KEY]"
 
 GLOBAL_DATE = ""
 
